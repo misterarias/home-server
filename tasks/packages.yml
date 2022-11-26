@@ -20,3 +20,8 @@
   ansible.builtin.systemd:
     state: started
     name: docker
+
+- name: Install NFS client
+  pacman:
+    name: nfs-utils
+    state: present
