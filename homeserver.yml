@@ -1,0 +1,12 @@
+---
+- name: Install home server appliances
+  hosts: home
+  gather_facts: false # needs python
+  become: true
+  tasks:
+    - name: Install needed software
+      include_tasks: tasks/packages.yml
+
+    - name: Create users
+      include_tasks: tasks/users.yml
+

@@ -1,0 +1,22 @@
+---
+- name: Raw-install Python3
+  raw: pacman --noconfirm -S python3
+
+- name: Docker install
+  pacman:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - docker
+    - docker-compose
+
+- name: Enable systemd service
+  ansible.builtin.systemd:
+    enabled: true
+    name: docker
+
+- name: Start systemd service
+  ansible.builtin.systemd:
+    state: started
+    name: docker

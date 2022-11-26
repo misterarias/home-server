@@ -10,6 +10,5 @@ verify-python:
 
 .PHONY: install
 install:
-	@ ansible-playbook  --inventory=inventory.ini playbooks/packages.yml
-	@ ansible-playbook  --inventory=inventory.ini playbooks/users.yml
+	@ ansible-playbook  --inventory=inventory.ini ./homeserver.yml
 

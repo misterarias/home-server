@@ -1,0 +1,9 @@
+---
+- name: Create installation user
+  user:
+    name: install
+    groups:
+      - wheel
+      - docker
+    append: true
+    createhome: false
