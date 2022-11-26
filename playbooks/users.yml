@@ -1,0 +1,12 @@
+---
+- name: Install needed software
+  hosts: home
+  become: yes
+  tasks:
+    - name: Create installation user
+      user:
+        name: install
+        groups:
+          - wheel
+          - docker
+        append: yes
