@@ -1,0 +1,20 @@
+---
+- name: Add proper domains to host
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regex: "/^127.0.0.1.*/"
+    line: "127.0.1.1  {{ inventory_hostname }} {{ inventory_hostname }}.localhost"
+- name: Create traefik directory
+  file:
+    state: directory
+    path: /srv/traefik/
+    owner: "{{ installation_user }}"
+- name: Render trafik compose file
+  template:
+    src: files/traefik/docker-compose.yml.j2
+    dest: /srv/traefik/docker-compose.yml
+
+- name: Stop previous traefik containers
+  community.docker.docker_compose:
+    project_src: /srv/traefik
+    state: absent

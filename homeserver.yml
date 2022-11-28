@@ -12,3 +12,7 @@
 
     - name: Mount shares
       include_tasks: tasks/nfs.yml
+
+    - name: Install Traefik
+      include_tasks: tasks/traefik.yml
+

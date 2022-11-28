@@ -1,7 +1,7 @@
 ---
 - name: Create installation user
   user:
-    name: install
+    name: "{{ installation_user }}"
     groups:
       - wheel
       - docker

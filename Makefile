@@ -10,5 +10,5 @@ verify-python:
 
 .PHONY: install
 install:
-	@ ansible-playbook  --inventory=inventory.yml ./homeserver.yml
+	@ ansible-playbook --verbose  --inventory=inventory.yml ./homeserver.yml
 
