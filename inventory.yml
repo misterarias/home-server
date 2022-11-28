@@ -3,7 +3,6 @@ home:
   hosts:
     billy:
   vars:
-    installation_user: install
     nfs_shares_root: 192.168.1.33
     nfs_movies:
       folder: "/volume1/video/Peliz"

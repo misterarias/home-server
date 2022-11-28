@@ -1,8 +1,7 @@
 ---
 - name: Install home server appliances
   hosts: home
-  gather_facts: false # needs python
-  become: true
+  gather_facts: false   # needs python
   tasks:
     - name: Install needed software
       include_tasks: tasks/packages.yml
@@ -15,4 +14,3 @@
 
     - name: Install Traefik
       include_tasks: tasks/traefik.yml
-

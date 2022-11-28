@@ -1,10 +1,12 @@
 ---
 - name: Create mount points
+  become: true
   file:
     path: "{{ nfs_movies.mount_point }}"
     state: directory
 
 - name: Add mounts to /etc/fstab
+  become: true
   ansible.builtin.lineinfile:
     path: /etc/fstab
     regex: ".*{{ nfs_movies.mount_point }}.*"
@@ -16,6 +18,7 @@
   raw: systemctl daemon-reload
 
 - name: Restart remote FS
+  become: true
   ansible.builtin.systemd:
     state: restarted
     name: remote-fs.target

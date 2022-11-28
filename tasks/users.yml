@@ -1,9 +1,16 @@
 ---
-- name: Create installation user
+- name: Get current user
+  command: whoami
+  register: whoami_output
+
+- name: Register installation_user
+  set_fact:
+    installation_user: "{{ whoami_output.stdout }}"
+
+- name: Add docker group to user
+  become: true
   user:
     name: "{{ installation_user }}"
     groups:
-      - wheel
       - docker
     append: true
-    createhome: false
