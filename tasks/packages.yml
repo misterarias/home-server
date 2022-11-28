@@ -1,7 +1,29 @@
 ---
+- name: Check for python
+  raw: "command -v python"
+  register: python_output
+
+- set_fact:
+    python_installed: not python_output.stdout
+
 - name: Raw-install Python3
+  when: not python_installed
   raw: pacman --noconfirm -S python3 python-pip
   become: true
+
+- name: Python packages for Pip
+  when: not python_installed
+  raw: "pip install --user '{{ item }}'"
+  loop:
+    - "setuptools>=65.6.0"
+
+- name: Python packages for Docker
+  pip:
+    extra_args: --user
+    name:
+      - docker>=6.0.0
+      - docker-compose>=1.29.2
+      - PyYAML>=5.4.0
 
 - name: Docker install
   become: true
@@ -12,23 +34,17 @@
   loop:
     - docker
     - docker-compose
-
-- name: Python packages for Docker
-  become: true
-  raw: "pip install {{ item }}"
-  loop:
-    - "setuptools>=65.6.0"
-    - "docker>=6.0.0"
-    - "docker-compose>=1.29.2"
-    - "PyYAML>=5.4.0"
+  register: docker_install
 
 - name: Enable systemd service
+  when: docker_install.changed
   become: true
   ansible.builtin.systemd:
     enabled: true
     name: docker
 
 - name: Start systemd service
+  when: docker_install.changed
   become: true
   ansible.builtin.systemd:
     state: started

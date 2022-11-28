@@ -10,15 +10,35 @@
   become: true
   file:
     state: directory
-    path: /srv/traefik/
+    path: "{{ traefik_folder }}"
     owner: "{{ installation_user }}"
 
 - name: Render trafik compose file
   template:
     src: files/traefik/docker-compose.yml.j2
-    dest: /srv/traefik/docker-compose.yml
+    dest: "{{ traefik_folder }}/docker-compose.yml"
 
 - name: Stop previous traefik containers
   community.docker.docker_compose:
-    project_src: /srv/traefik
+    project_src: "{{ traefik_folder }}"
     state: absent
+
+- name: Create and start services
+  community.docker.docker_compose:
+    project_src: "{{ traefik_folder }}"
+  register: output
+
+- ansible.builtin.debug:
+    var: output
+
+- name: Run `docker-compose up` again
+  community.docker.docker_compose:
+    project_src: "{{ traefik_folder }}"
+    build: false
+  register: output
+
+- ansible.builtin.debug:
+    var: output
+
+- ansible.builtin.assert:
+    that: not output.changed

@@ -12,12 +12,15 @@
     regex: ".*{{ nfs_movies.mount_point }}.*"
     line: |
       {{ nfs_shares_root }}:{{ nfs_movies.folder }} {{ nfs_movies.mount_point }}  nfs noauto,x-systemd.automount,_netdev,timeo=10,x-systemd.ilde-timeout=60
+  register: fstab_mounts
 
 - name: Reload services
+  when: fstab_mounts.changed
   become: true
   raw: systemctl daemon-reload
 
 - name: Restart remote FS
+  when: fstab_mounts.changed
   become: true
   ansible.builtin.systemd:
     state: restarted
