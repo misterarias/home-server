@@ -1,0 +1,9 @@
+---
+home:
+  hosts:
+    billy:
+  vars:
+    nfs_shares_root: 192.168.1.33
+    nfs_movies:
+      folder: "/volume1/video/Peliz"
+      mount_point: "/mnt/nfs/peliz"

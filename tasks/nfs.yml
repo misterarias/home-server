@@ -1,0 +1,21 @@
+---
+- name: Create mount points
+  file:
+    path: "{{ nfs_movies.mount_point }}"
+    state: directory
+
+- name: Add mounts to /etc/fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regex: ".*{{ nfs_movies.mount_point }}.*"
+    line: |
+      {{ nfs_shares_root }}:{{ nfs_movies.folder }} {{ nfs_movies.mount_point }}  nfs noauto,x-systemd.automount,_netdev,timeo=10,x-systemd.ilde-timeout=60
+
+- name: Reload services
+  become: true
+  raw: systemctl daemon-reload
+
+- name: Restart remote FS
+  ansible.builtin.systemd:
+    state: restarted
+    name: remote-fs.target
