@@ -3,9 +3,12 @@ home:
   hosts:
     billy:
   vars:
-    nfs_shares_root: 192.168.1.33
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
+    nfs_shares_root: 192.168.1.33
+    nfs_jellyfin_config:
+      folder: "/volume1/video/jellyfin"
+      mount_point: "/mnt/nfs/jellyfin"
     nfs_movies:
       folder: "/volume1/video/Peliz"
       mount_point: "/mnt/nfs/peliz"

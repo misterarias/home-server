@@ -2,16 +2,22 @@
 - name: Create mount points
   become: true
   file:
-    path: "{{ nfs_movies.mount_point }}"
+    path: "{{ item.mount_point }}"
     state: directory
+  loop:
+    - "{{ nfs_movies }}"
+    - "{{ nfs_jellyfin_config }}"
 
 - name: Add mounts to /etc/fstab
   become: true
   ansible.builtin.lineinfile:
     path: /etc/fstab
-    regex: ".*{{ nfs_movies.mount_point }}.*"
+    regex: ".*{{ item.mount_point }}.*"
     line: |
-      {{ nfs_shares_root }}:{{ nfs_movies.folder }} {{ nfs_movies.mount_point }}  nfs noauto,x-systemd.automount,_netdev,timeo=10,x-systemd.ilde-timeout=60
+      {{ nfs_shares_root }}:{{ item.folder }} {{ item.mount_point }}  nfs noauto,x-systemd.automount,_netdev,timeo=10,x-systemd.ilde-timeout=60
+  loop:
+    - "{{ nfs_movies }}"
+    - "{{ nfs_jellyfin_config }}"
   register: fstab_mounts
 
 - name: Reload services

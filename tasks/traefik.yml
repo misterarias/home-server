@@ -4,7 +4,7 @@
   ansible.builtin.lineinfile:
     path: /etc/hosts
     regex: "/^127.0.0.1.*/"
-    line: "127.0.1.1  {{ inventory_hostname }} {{ inventory_hostname }}.localhost"
+    line: "127.0.0.1 {{ inventory_hostname }} {{ inventory_hostname }}.local"
 
 - name: Create traefik directory
   become: true
@@ -12,11 +12,17 @@
     state: directory
     path: "{{ traefik_folder }}"
     owner: "{{ installation_user }}"
+    mode: 0777
 
-- name: Render trafik compose file
+# TODO: Dynamic
+- name: Render trafik files
   template:
-    src: files/traefik/docker-compose.yml.j2
-    dest: "{{ traefik_folder }}/docker-compose.yml"
+    src: "files/traefik/{{ item }}.j2"
+    dest: "{{ traefik_folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+    - traefik.toml
+    - traefik-provider.toml
 
 - name: Stop previous traefik containers
   community.docker.docker_compose:
@@ -27,18 +33,3 @@
   community.docker.docker_compose:
     project_src: "{{ traefik_folder }}"
   register: output
-
-- ansible.builtin.debug:
-    var: output
-
-- name: Run `docker-compose up` again
-  community.docker.docker_compose:
-    project_src: "{{ traefik_folder }}"
-    build: false
-  register: output
-
-- ansible.builtin.debug:
-    var: output
-
-- ansible.builtin.assert:
-    that: not output.changed
