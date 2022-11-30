@@ -29,8 +29,8 @@ services:
     container_name: "simple-service"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`{{ inventory_hostname }}`"
-      - "traefik.http.routers.whoami.entrypoints=web"
+      - 'traefik.http.routers.whoami.rule=Host(`{{ inventory_hostname }}`) && PathPrefix(`/whoami`)'
+      - "traefik.http.routers.whoami.entrypoints=http"
 
   jellyfin:
     image: "jellyfin/jellyfin"
@@ -56,7 +56,7 @@ services:
       ## HTTP Router
       #### Entry point where Jellyfin is accessible via
       #### Change secure to https in the line below to have accessible without needing to specify a port and change the SSLHost option below
-      - 'traefik.http.routers.jellyfin.entryPoints=secure'
+      - 'traefik.http.routers.jellyfin.entryPoints=http'
       #### Host or Path where Jellyfin is accessible
       #### Remove (or change) this rule if you'd rather have Jellyfin accessible at a PathPrefix URI
       - 'traefik.http.routers.jellyfin.rule=Host(`{{ inventory_hostname }}`) && PathPrefix(`/jellyfin`)'
