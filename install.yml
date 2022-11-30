@@ -1,0 +1,19 @@
+---
+- name: Install home server appliances
+  hosts: home
+  gather_facts: true
+  tasks:
+    - name: Get current user
+      command: whoami
+      register: whoami_output
+
+    - name: Register installation_user
+      set_fact:
+        installation_user: "{{ whoami_output.stdout }}"
+
+    - name: Register Host IP
+      set_fact:
+        host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+    - name: Install Traefik
+      include_tasks: tasks/traefik.yml

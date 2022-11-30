@@ -2,4 +2,4 @@
   [http.services]
     [http.services.jellyfin-svc]
       [[http.services.jellyfin-svc.loadBalancer.servers]]
-        url = "http://{{ inventory_hostname }}:8096"
+        url = "http://{{ host_ip }}:{{ jellyfin_service_port }}"

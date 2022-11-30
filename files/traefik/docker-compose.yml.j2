@@ -21,6 +21,8 @@ services:
       - {{ traefik_folder }}/traefik.toml:/traefik.toml
       # Configuration for the file provider (needed for host networking and default TLS Options)
       - {{ traefik_folder }}/traefik-provider.toml:/traefik-provider.toml
+       # Log File (optional)
+      - {{ traefik_folder }}/traefik.log:/traefik.log
 
   whoami:
     image: "traefik/whoami"
@@ -57,23 +59,23 @@ services:
       - 'traefik.http.routers.jellyfin.entryPoints=secure'
       #### Host or Path where Jellyfin is accessible
       #### Remove (or change) this rule if you'd rather have Jellyfin accessible at a PathPrefix URI
-      - 'traefik.http.routers.jellyfin.rule=Host(`{{ inventory_hostname }}`)' # OPTIONAL: && PathPrefix(`/jellyfin`)
+      - 'traefik.http.routers.jellyfin.rule=Host(`{{ inventory_hostname }}`) && PathPrefix(`/jellyfin`)'
       #### Enable TLS with the ACME/LetsEncrypt resolver for {{ inventory_hostname }}
       - 'traefik.http.routers.jellyfin.tls=false'
       - 'traefik.http.routers.jellyfin.tls.certResolver=leresolver'
       - 'traefik.http.routers.jellyfin.tls.domains={{ inventory_hostname }}'
       ## Middleware
-      - 'traefik.http.routers.jellyfin.middlewares=jellyfin-mw'
+      ### - 'traefik.http.routers.jellyfin.middlewares=jellyfin-mw'
       #### The customResponseHeaders option lists the Header names and values to apply to the response.
       - 'traefik.http.middlewares.jellyfin-mw.headers.customResponseHeaders.X-Robots-Tag=noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex'
       #### The sslRedirect is set to true, then only allow https requests.
-      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLRedirect=true'
+      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLRedirect=false'
       #### The sslHost option is the host name that is used to redirect http requests to https.
       #### This is the exact URL that will be redirected to, so you can remove the :9999 port if using default SSL port
-      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLHost={{ inventory_hostname }}:9999'
+      #- 'traefik.http.middlewares.jellyfin-mw.headers.SSLHost={{ inventory_hostname }}:9999'
       #### Set sslForceHost to true and set SSLHost to forced requests to use SSLHost even the ones that are already using SSL.
       #### Note that this uses SSLHost verbatim, so add the port to SSLHost if you are using an alternate port.
-      - 'traefik.http.middlewares.jellyfin-mw.headers.SSLForceHost=true'
+      #- 'traefik.http.middlewares.jellyfin-mw.headers.SSLForceHost=true'
       #### The stsSeconds is the max-age of the Strict-Transport-Security header. If set to 0, would NOT include the header.
       - 'traefik.http.middlewares.jellyfin-mw.headers.STSSeconds=315360000'
       #### The stsIncludeSubdomains is set to true, the includeSubDomains directive will be
@@ -95,7 +97,7 @@ services:
       ## HTTP Service
       # We define the port here as a port is required, but note that the service is pointing to the service defined in @file
       - 'traefik.http.routers.jellyfin.service=jellyfin-svc@file'
-      - 'traefik.http.services.jellyfin-svc.loadBalancer.server.port=8096'
+      - 'traefik.http.services.jellyfin-svc.loadBalancer.server.port={{ jellyfin_service_port }}'
       - 'traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader=true'
       ## Redirection of HTTP on port 9999 to HTTPS on port 9999 (consistent protocol)
       - 'traefik.http.routers.jellyfin-insecure.entryPoints=secure'

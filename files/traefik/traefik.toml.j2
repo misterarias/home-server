@@ -35,7 +35,6 @@
     filename = "/traefik-provider.toml"
 
 
-# - "--entrypoints.web.address=:80"
 # EntryPoints are the network entry points into Traefik. They define
 # the port which will receive the packets, and whether to listen for
 # TCP or UDP.
@@ -46,11 +45,11 @@
   # Standard HTTP redirects to HTTPS
   [entryPoints.http]
     address = ":80"
-    [entryPoints.http.http]
-      [entryPoints.http.http.redirections]
-        [entryPoints.http.http.redirections.entrypoint]
-          to = "https"
-          scheme = "https"
+###    [entryPoints.http.http]
+###      [entryPoints.http.http.redirections]
+###        [entryPoints.http.http.redirections.entrypoint]
+###          to = "https"
+###          scheme = "https"
   # Standard HTTPS
   [entryPoints.https]
     address = ":443"

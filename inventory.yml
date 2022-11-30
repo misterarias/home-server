@@ -3,6 +3,7 @@ home:
   hosts:
     billy:
   vars:
+    jellyfin_service_port: 8096
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
     nfs_shares_root: 192.168.1.33

@@ -8,7 +8,11 @@ verify-python:
 	@ansible all --list-hosts --inventory=inventory.yml
 	@ansible all -m ping --inventory=inventory.yml
 
+.PHONY: provision
+provision:
+	@ansible-playbook --inventory=inventory.yml ./provision.yml
+
 .PHONY: install
 install:
-	@ansible-playbook --inventory=inventory.yml ./homeserver.yml
+	@ansible-playbook --inventory=inventory.yml ./install.yml
 

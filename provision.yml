@@ -1,5 +1,5 @@
 ---
-- name: Install home server appliances
+- name: Provision home server
   hosts: home
   gather_facts: false   # needs python
   tasks:
@@ -11,6 +11,3 @@
 
     - name: Mount shares
       include_tasks: tasks/nfs.yml
-
-    - name: Install Traefik
-      include_tasks: tasks/traefik.yml
