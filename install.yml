@@ -17,3 +17,6 @@
 
     - name: Install Traefik
       include_tasks: tasks/traefik.yml
+
+    - name: Install jellyfin
+      include_tasks: tasks/jellyfin.yml

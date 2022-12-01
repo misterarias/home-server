@@ -31,8 +31,6 @@
     # Traefik requires access to the docker socket to get its dynamic
     # configuration.
     endpoint = "unix:///var/run/docker.sock"
-  [providers.file]
-    filename = "/traefik-provider.toml"
 
 
 # EntryPoints are the network entry points into Traefik. They define

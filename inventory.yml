@@ -6,10 +6,16 @@ home:
     jellyfin_service_port: 8096
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
+    jellyfin_folder: "{{ compose_folder }}/jellyfin"
     nfs_shares_root: 192.168.1.33
-    nfs_jellyfin_config:
+    nfs_jellyfin:
       folder: "/volume1/video/jellyfin"
       mount_point: "/mnt/nfs/jellyfin"
+    nfs_jellyfin_config: "{{ nfs_jellyfin.mount_point }}/config"
+    nfs_jellyfin_cache: "{{ nfs_jellyfin.mount_point }}/cache"
     nfs_movies:
       folder: "/volume1/video/Peliz"
       mount_point: "/mnt/nfs/peliz"
+    nfs_shows:
+      folder: "/volume1/video/Zeriez"
+      mount_point: "/mnt/nfs/zeriez"

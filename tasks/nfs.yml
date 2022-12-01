@@ -6,7 +6,17 @@
     state: directory
   loop:
     - "{{ nfs_movies }}"
-    - "{{ nfs_jellyfin_config }}"
+    - "{{ nfs_shows }}"
+    - "{{ nfs_jellyfin }}"
+
+- name: Change config folder permissions
+  become: true
+  ansible.builtin.file:
+    path: "{{ nfs_jellyfin.mount_point }}"
+    state: directory
+    recurse: true
+    owner: 1000
+    group: 1000
 
 - name: Add mounts to /etc/fstab
   become: true
@@ -17,7 +27,8 @@
       {{ nfs_shares_root }}:{{ item.folder }} {{ item.mount_point }}  nfs noauto,x-systemd.automount,_netdev,timeo=10,x-systemd.ilde-timeout=60
   loop:
     - "{{ nfs_movies }}"
-    - "{{ nfs_jellyfin_config }}"
+    - "{{ nfs_shows }}"
+    - "{{ nfs_jellyfin }}"
   register: fstab_mounts
 
 - name: Reload services

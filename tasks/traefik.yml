@@ -1,11 +1,4 @@
 ---
-- name: Add proper domains to host
-  become: true
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    regex: "/^127.0.0.1.*/"
-    line: "127.0.0.1 {{ inventory_hostname }} {{ inventory_hostname }}.local"
-
 - name: Create traefik directory
   become: true
   file:
@@ -18,13 +11,11 @@
   copy:
     content: ""
     dest: "{{ traefik_folder }}/traefik.log"
-    force: no
+    force: false
     owner: "{{ installation_user }}"
     mode: 0777
 
-
-# TODO: Dynamic
-- name: Render trafik files
+- name: Render traefik files
   template:
     src: "files/traefik/{{ item }}.j2"
     dest: "{{ traefik_folder }}/{{ item }}"
@@ -32,13 +23,15 @@
     - docker-compose.yml
     - traefik.toml
     - traefik-provider.toml
+  register: traefik_files
 
 - name: Stop previous traefik containers
+  when: traefik_files.changed
   community.docker.docker_compose:
     project_src: "{{ traefik_folder }}"
     state: absent
 
 - name: Create and start services
+  when: traefik_files.changed
   community.docker.docker_compose:
     project_src: "{{ traefik_folder }}"
-  register: output
