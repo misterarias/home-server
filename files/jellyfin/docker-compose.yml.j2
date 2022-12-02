@@ -4,6 +4,8 @@ version: "3.3"
 services:
 
   jellyfin:
+    command: |
+      /usr/bin/jellyfin --ffmpeg=/usr/lib/jellyfin-ffmpeg/ffmpeg --webdir=/usr/share/jellyfin/web
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:
@@ -19,7 +21,7 @@ services:
     volumes:
       - {{ nfs_jellyfin_config }}:/config
       - {{ nfs_jellyfin_cache }}:/cache
-      # - {{ nfs_movies.mount_point }}:/media/movies
+      - {{ nfs_movies.mount_point }}:/media/movies
       - {{ nfs_shows.mount_point }}:/media/shows
     restart: unless-stopped
     devices:

@@ -12,7 +12,7 @@
 - name: Change config folder permissions
   become: true
   ansible.builtin.file:
-    path: "{{ nfs_jellyfin.mount_point }}"
+    path: "{{ nfs_jellyfin_config }}"
     state: directory
     recurse: true
     owner: 1000

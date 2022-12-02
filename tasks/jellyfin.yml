@@ -4,15 +4,17 @@
   file:
     state: directory
     path: "{{ jellyfin_folder }}"
-    owner: "{{ installation_user }}"
+    owner: 1000
+    group: 1000
     mode: 0777
 
 - name: Touch log config file
   copy:
     src: "files/jellyfin/logging.default.json"
-    dest: "{{ nfs_jellyfin_config }}/"
+    dest: "{{ nfs_jellyfin_config }}/config"
     force: false
-    owner: "{{ installation_user }}"
+    owner: 1000
+    group: 1000
     mode: 0777
 
 - name: Touch log watches file
