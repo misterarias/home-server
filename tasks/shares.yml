@@ -1,0 +1,33 @@
+---
+- name: Create mount points
+  become: true
+  file:
+    path: "{{ item.mount_point }}"
+    state: directory
+    recurse: true
+    owner: 1000
+    group: 1000
+  loop: "{{ shares }}"
+
+- name: Mount Samba shares
+  register: fstab_mounts
+  become: true
+  ansible.posix.mount:
+    src: "{{ item.folder }}"
+    path: "{{ item.mount_point }}"
+    opts: "{{ samba_fstab_options }}"
+    state: mounted
+    fstype: cifs
+  loop: "{{ shares }}"
+
+- name: Reload services
+  when: fstab_mounts.changed
+  become: true
+  raw: systemctl daemon-reload
+
+- name: Restart remote FS
+  when: fstab_mounts.changed
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    name: remote-fs.target

@@ -4,29 +4,29 @@ version: "3.3"
 services:
 
   jellyfin:
-    command: |
-      /usr/bin/jellyfin --ffmpeg=/usr/lib/jellyfin-ffmpeg/ffmpeg --webdir=/usr/share/jellyfin/web
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
-      # - JELLYFIN_PublishedServerUrl=192.168.1.96
     group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
       - '989' # render
       - '985' # video
-    # Network mode of 'host' exposes the ports on the host. This is needed for DLNA access.
-    network_mode: 'host'
+    ports:
+    - 8096:8096
+    - 8920:8920
     volumes:
-      - {{ nfs_jellyfin_config }}:/config
-      - {{ nfs_jellyfin_cache }}:/cache
-      - {{ nfs_movies.mount_point }}:/media/movies
-      - {{ nfs_shows.mount_point }}:/media/shows
+    # - {{ shares.jellyfin_config.mount_point }}:/config
+      - {{ shares.jellyfin_cache.mount_point }}:/cache
+      - {{ shares.movies.mount_point }}:/media/movies
+      - {{ shares.shows.mount_point }}:/media/shows
+      - {{ shares.books.mount_point }}:/media/books
     restart: unless-stopped
     devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri:/dev/dri
+    #- /dev/dri/renderD128:/dev/dri/renderD128
+    #- /dev/dri/card0:/dev/dri/card0
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.jellyfin.entrypoints=http'

@@ -50,8 +50,8 @@
     state: started
     name: docker
 
-- name: Install NFS client
+- name: Install Samba tooling
   become: true
   pacman:
-    name: nfs-utils
+    name: cifs-utils
     state: present

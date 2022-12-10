@@ -10,4 +10,4 @@
       include_tasks: tasks/users.yml
 
     - name: Mount shares
-      include_tasks: tasks/nfs.yml
+      include_tasks: tasks/shares.yml

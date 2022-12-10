@@ -7,15 +7,19 @@ home:
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
     jellyfin_folder: "{{ compose_folder }}/jellyfin"
-    nfs_shares_root: 192.168.1.33
-    nfs_jellyfin:
-      folder: "/volume1/video/jellyfin"
-      mount_point: "/mnt/nfs/jellyfin"
-    nfs_jellyfin_config: "{{ nfs_jellyfin.mount_point }}/config"
-    nfs_jellyfin_cache: "{{ nfs_jellyfin.mount_point }}/cache"
-    nfs_movies:
-      folder: "/volume1/video/Peliz"
-      mount_point: "/mnt/nfs/peliz"
-    nfs_shows:
-      folder: "/volume1/video/Zeriez"
-      mount_point: "/mnt/nfs/zeriez"
+    samba_server: 192.168.1.33
+    shares:
+      - folder: "//{{ samba_server }}/video/jellyfin/config"
+        mount_point: "/mnt/shared/jellyfin/config"
+      - folder: "//{{ samba_server }}/video/jellyfin/cache"
+        mount_point: "/mnt/shared/jellyfin/cache"
+      - folder: "//{{ samba_server }}/video/Peliz"
+        mount_point: "/mnt/shared/movies"
+      - folder: "//{{ samba_server }}/video/Zeriez"
+        mount_point: "/mnt/shared/shows"
+      - folder: "//{{ samba_server }}/Bookz"
+        mount_point: "/mnt/shared/books"
+    samba_credentials_file: /etc/samba/credentials
+    # TODO: parametrize user ID
+    samba_fstab_options: |
+      noauto,x-systemd.automount,_netdev,x-systemd.ilde-timeout=60,rw,credentials={{ samba_credentials_file }},uid=1000,gid=1000,iocharset=utf8
