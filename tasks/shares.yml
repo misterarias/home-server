@@ -1,24 +1,52 @@
 ---
+- name: Create samba config
+  become: true
+  file:
+    state: directory
+    path: "{{ samba.config_dir }}"
+    owner: root
+    mode: 0700
+
+- name: Create samba credentials file
+  become: true
+  template:
+    src: files/samba/credentials.j2
+    dest: "{{ samba.credentials_file }}"
+    force: true
+    owner: root
+    mode: 0600
+
+- name: Unmount Samba shares
+  register: fstab_mounts
+  become: true
+  ansible.posix.mount:
+    src: "{{ item.value.folder }}"
+    path: "{{ item.value.mount_point }}"
+    opts: "{{ samba_fstab_options }}"
+    state: unmounted
+    fstype: cifs
+  loop: "{{ shares|dict2items }}"
+
 - name: Create mount points
   become: true
   file:
-    path: "{{ item.mount_point }}"
+    path: "{{ item.value.mount_point }}"
     state: directory
     recurse: true
     owner: 1000
     group: 1000
-  loop: "{{ shares }}"
+  loop: "{{ shares|dict2items }}"
 
 - name: Mount Samba shares
   register: fstab_mounts
   become: true
   ansible.posix.mount:
-    src: "{{ item.folder }}"
-    path: "{{ item.mount_point }}"
+    src: "{{ item.value.folder }}"
+    path: "{{ item.value.mount_point }}"
     opts: "{{ samba_fstab_options }}"
     state: mounted
     fstype: cifs
-  loop: "{{ shares }}"
+  loop: "{{ shares|dict2items }}"
 
 - name: Reload services
   when: fstab_mounts.changed

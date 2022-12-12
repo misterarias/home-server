@@ -7,19 +7,21 @@ home:
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
     jellyfin_folder: "{{ compose_folder }}/jellyfin"
-    samba_server: 192.168.1.33
+    samba:
+      server: 192.168.1.33
+      config_dir: /etc/samba
+      credentials_file: /etc/samba/credentials
+    samba_fstab_options: "rw,credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8"
     shares:
-      - folder: "//{{ samba_server }}/video/jellyfin/config"
+      jellyfin_config:
+        folder: "//{{ samba.server }}/video/jellyfin/config"
         mount_point: "/mnt/shared/jellyfin/config"
-      - folder: "//{{ samba_server }}/video/jellyfin/cache"
-        mount_point: "/mnt/shared/jellyfin/cache"
-      - folder: "//{{ samba_server }}/video/Peliz"
+      movies:
+        folder: "//{{ samba.server }}/video/Peliz"
         mount_point: "/mnt/shared/movies"
-      - folder: "//{{ samba_server }}/video/Zeriez"
+      shows:
+        folder: "//{{ samba.server }}/video/Zeriez"
         mount_point: "/mnt/shared/shows"
-      - folder: "//{{ samba_server }}/Bookz"
+      books:
+        folder: "//{{ samba.server }}/Bookz"
         mount_point: "/mnt/shared/books"
-    samba_credentials_file: /etc/samba/credentials
-    # TODO: parametrize user ID
-    samba_fstab_options: |
-      noauto,x-systemd.automount,_netdev,x-systemd.ilde-timeout=60,rw,credentials={{ samba_credentials_file }},uid=1000,gid=1000,iocharset=utf8
