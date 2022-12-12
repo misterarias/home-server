@@ -8,15 +8,6 @@
     group: 1000
     mode: 0777
 
-- name: Touch log config file
-  copy:
-    src: "files/jellyfin/logging.default.json"
-    dest: "{{ nfs_jellyfin_config }}/config"
-    force: false
-    owner: 1000
-    group: 1000
-    mode: 0777
-
 - name: Touch log watches file
   become: true
   copy:
@@ -37,21 +28,10 @@
   become: true
   raw: sysctl --system
 
-- name: Render jellyfin files
-  template:
-    src: "files/jellyfin/{{ item }}.j2"
-    dest: "{{ jellyfin_folder }}/{{ item }}"
-  loop:
-    - docker-compose.yml
-  register: jellyfin_files
-
-- name: Stop previous containers
-  when: jellyfin_files.changed
-  community.docker.docker_compose:
-    project_src: "{{ jellyfin_folder }}"
-    state: absent
-
-- name: Create and start services
-  when: jellyfin_files.changed
-  community.docker.docker_compose:
-    project_src: "{{ jellyfin_folder }}"
+##- name: Render jellyfin files
+##  template:
+##    src: "files/jellyfin/{{ item }}.j2"
+##    dest: "{{ jellyfin_folder }}/{{ item }}"
+##  loop:
+##    - docker-compose.yml
+##  register: jellyfin_files

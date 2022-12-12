@@ -15,8 +15,8 @@
       set_fact:
         host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 
+    - name: Setup jellyfin
+      include_tasks: tasks/jellyfin.yml
+
     - name: Install Traefik
       include_tasks: tasks/traefik.yml
-
-    - name: Install jellyfin
-      include_tasks: tasks/jellyfin.yml

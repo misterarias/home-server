@@ -13,6 +13,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
     ports:
       - "80:80"
+      - "443:443"
       - "8080:8080"
     volumes:
        # So that Traefik can listen to the Docker events (read-only)
@@ -25,9 +26,42 @@ services:
       - {{ traefik_folder }}/traefik.log:/traefik.log
 
   whoami:
-    image: "traefik/whoami"
-    container_name: "simple-service"
+    image: traefik/whoami
+    container_name: whoami
     labels:
       - "traefik.enable=true"
-      - 'traefik.http.routers.whoami.rule=Host(`{{ inventory_hostname }}`) && PathPrefix(`/whoami`)'
+      - 'traefik.http.routers.whoami.rule=Host(`whoami.{{ inventory_hostname }}`)'
       - "traefik.http.routers.whoami.entrypoints=http"
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - JELLYFIN_PublishedServerUrl=jellyfin.{{ inventory_hostname }}
+    group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
+      - '989' # render
+      - '985' # video
+    ports:
+    - 8096:8096
+    volumes:
+      # NOTE: local folder, to avoid sqlite + samba problems
+      - {{ jellyfin_folder }}/config:/config
+      - {{ shares.jellyfin.mount_point }}:/cache
+      - {{ shares.movies.mount_point }}:/media/movies
+      - {{ shares.shows.mount_point }}:/media/shows
+      - {{ shares.books.mount_point }}:/media/books
+    restart: unless-stopped
+    devices:
+      - /dev/dri:/dev/dri
+    #- /dev/dri/renderD128:/dev/dri/renderD128
+    #- /dev/dri/card0:/dev/dri/card0
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.jellyfin.entrypoints=http'
+      - 'traefik.http.routers.jellyfin.service=jellyfin-svc@file'
+      - 'traefik.http.routers.jellyfin.rule=Host(`jellyfin.{{ inventory_hostname }}`)'
+      - 'traefik.http.services.jellyfin-svc.loadBalancer.server.port=8096'
+      - 'traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader=true'
