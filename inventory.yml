@@ -3,6 +3,13 @@ home:
   hosts:
     billy:
   vars:
+    # TODO: Refactor stuff so variables are contained inside their service
+    services:
+      traefik: {}
+      pihole: {}
+      whoami: {}
+      jellyfin: {}
+
     docker_compose_version: "3.3"
     jellyfin_service_port: 8096
     compose_folder: "/srv"
@@ -14,7 +21,8 @@ home:
       server: 192.168.1.33
       config_dir: /etc/samba
       credentials_file: /etc/samba/credentials
-    samba_fstab_options: "credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm"
+    samba_fstab_options: |
+      credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm
     shares:
       jellyfin:
         folder: "//{{ samba.server }}/video/jellyfin"

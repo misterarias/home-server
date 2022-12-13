@@ -1,12 +1,15 @@
 ---
-- name: Create Pihole directory
+- name: Create Pihole directories
   become: true
   file:
     state: directory
-    path: "{{ pihole_folder }}"
+    path: "{{ item }}"
     owner: 1000
     group: 1000
     mode: 0777
+  loop:
+    - "{{ pihole_folder }}"
+    - "{{ pihole_folder }}/etc-pihole"
 
 - name: Render pihole files
   template:
@@ -14,6 +17,7 @@
     dest: "{{ pihole_folder }}/{{ item }}"
   loop:
     - docker-compose.yml
+    - etc-pihole/custom-list
   register: pihole_files
 
 # Disable port 53 in host so we can use pihole: https://github.com/pi-hole/docker-pi-hole/#running-pi-hole-docker

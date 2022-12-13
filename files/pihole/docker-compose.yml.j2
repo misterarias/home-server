@@ -28,7 +28,7 @@ services:
       VIRTUAL_HOST: "pihole.{{ inventory_hostname}}"
     volumes:
       - {{ pihole_folder }}/etc-pihole:/etc/pihole
-      - {{ pihole_folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
+      # - {{ pihole_folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
     restart: unless-stopped
     labels:
       - "traefik.enable=true"

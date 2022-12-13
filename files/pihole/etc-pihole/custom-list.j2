@@ -1,0 +1,3 @@
+{% for _service in services.keys()  %}
+{{ host_ip }} {{ _service }}.{{ inventory_hostname }}
+{% endfor %}
