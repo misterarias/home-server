@@ -6,6 +6,7 @@ home:
     jellyfin_service_port: 8096
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
+    traefik_network_name: home_network
     jellyfin_folder: "{{ compose_folder }}/jellyfin"
     samba:
       server: 192.168.1.33

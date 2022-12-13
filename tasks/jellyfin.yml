@@ -28,10 +28,28 @@
   become: true
   raw: sysctl --system
 
-##- name: Render jellyfin files
-##  template:
-##    src: "files/jellyfin/{{ item }}.j2"
-##    dest: "{{ jellyfin_folder }}/{{ item }}"
-##  loop:
-##    - docker-compose.yml
-##  register: jellyfin_files
+- name: Render jellyfin files
+  template:
+    src: "files/jellyfin/{{ item }}.j2"
+    dest: "{{ jellyfin_folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+  register: jellyfin_files
+
+- name: Get current status
+  community.docker.docker_compose:
+    project_src: "{{ jellyfin_folder }}"
+    build: false
+  register: output
+
+- name: Stop previous traefik containers
+  when: jellyfin_files.changed or output.services.jellyfin.jellyfin.state.running
+  community.docker.docker_compose:
+    project_src: "{{ jellyfin_folder }}"
+    state: absent
+  register: output
+
+- name: Create and start services
+  when: jellyfin_files.changed or output.changed
+  community.docker.docker_compose:
+    project_src: "{{ jellyfin_folder }}"

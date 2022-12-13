@@ -15,8 +15,18 @@
       set_fact:
         host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 
-    - name: Setup jellyfin
-      include_tasks: tasks/jellyfin.yml
+    - name: Get docker network information
+      community.docker.docker_network_info:
+        name: "{{ traefik_network_name }}"
+      register: result
 
-    - name: Install Traefik
+    - name: Create docker network for traefik and the rest of services
+      when: not result.exists
+      community.docker.docker_network:
+        name: "{{ traefik_network_name }}"
+
+    - name: Run Traefik
       include_tasks: tasks/traefik.yml
+
+    - name: Run jellyfin
+      include_tasks: tasks/jellyfin.yml

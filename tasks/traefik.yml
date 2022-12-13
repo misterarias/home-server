@@ -25,13 +25,20 @@
     - traefik-provider.toml
   register: traefik_files
 
+- name: Get current status
+  community.docker.docker_compose:
+    project_src: "{{ traefik_folder }}"
+    build: false
+  register: output
+
 - name: Stop previous traefik containers
-  when: traefik_files.changed
+  when: traefik_files.changed or output.services.traefik.traefik.state.running
   community.docker.docker_compose:
     project_src: "{{ traefik_folder }}"
     state: absent
+  register: output
 
 - name: Create and start services
-  when: traefik_files.changed
+  when: traefik_files.changed or output.changed
   community.docker.docker_compose:
     project_src: "{{ traefik_folder }}"
