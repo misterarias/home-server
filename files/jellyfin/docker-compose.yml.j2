@@ -1,5 +1,5 @@
 ---
-version: "3.3"
+version: "{{ docker_compose_version }}"
 
 networks:
   {{ traefik_network_name }}:
@@ -8,7 +8,7 @@ networks:
 services:
   jellyfin:
     networks:
-    - {{ traefik_network_name }}
+      - {{ traefik_network_name }}
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:

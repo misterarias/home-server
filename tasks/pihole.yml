@@ -1,0 +1,62 @@
+---
+- name: Create Pihole directory
+  become: true
+  file:
+    state: directory
+    path: "{{ pihole_folder }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+
+- name: Render pihole files
+  template:
+    src: "files/pihole/{{ item }}.j2"
+    dest: "{{ pihole_folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+  register: pihole_files
+
+# Disable port 53 in host so we can use pihole: https://github.com/pi-hole/docker-pi-hole/#running-pi-hole-docker
+- name: Disable DNS port in host
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regex: '.*DNSStubListener.*'
+    line: DNSStubListener=no
+
+- name: Delete system resolv.conf
+  become: true
+  ansible.builtin.file:
+    state: absent
+    path: /etc/resolv.conf
+
+- name: Symlink resolve file to systemd
+  become: true
+  ansible.builtin.file:
+    state: link
+    src: /etc/systemd/resolved.conf
+    dest: /etc/resolv.conf
+
+- name: Restart systemd-resolved
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    name: systemd-resolved
+
+- name: Get current status
+  community.docker.docker_compose:
+    project_src: "{{ pihole_folder }}"
+    build: false
+  register: output
+
+- name: Stop previous pihole containers
+  when: pihole_files.changed and output.services.pihole.pihole.state.running
+  community.docker.docker_compose:
+    project_src: "{{ pihole_folder }}"
+    state: absent
+  register: output
+
+- name: Create and start services
+  when: pihole_files.changed or output.changed
+  community.docker.docker_compose:
+    project_src: "{{ pihole_folder }}"

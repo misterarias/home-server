@@ -1,5 +1,5 @@
 ---
-version: "3.3"
+version: "{{ docker_compose_version }}"
 
 networks:
   {{ traefik_network_name }}:
@@ -8,9 +8,9 @@ networks:
 services:
   traefik:
     networks:
-    - {{ traefik_network_name }}
-    image: "traefik:v2.9"
-    container_name: "traefik"
+      - {{ traefik_network_name }}
+    image: traefik:v2.9
+    container_name: traefik
     restart: unless-stopped
     command:
       - "--api.insecure=true"
@@ -21,13 +21,9 @@ services:
       - "443:443"
       - "8080:8080"
     volumes:
-       # So that Traefik can listen to the Docker events (read-only)
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # TOML Configuration with global options
       - {{ traefik_folder }}/traefik.toml:/traefik.toml
-      # Configuration for the file provider (needed for host networking and default TLS Options)
       - {{ traefik_folder }}/traefik-provider.toml:/traefik-provider.toml
-       # Log File (optional)
       - {{ traefik_folder }}/traefik.log:/traefik.log
 
   whoami:

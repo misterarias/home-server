@@ -32,7 +32,7 @@
   register: output
 
 - name: Stop previous traefik containers
-  when: traefik_files.changed or output.services.traefik.traefik.state.running
+  when: traefik_files.changed and output.services.traefik.traefik.state.running
   community.docker.docker_compose:
     project_src: "{{ traefik_folder }}"
     state: absent

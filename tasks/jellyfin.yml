@@ -42,8 +42,8 @@
     build: false
   register: output
 
-- name: Stop previous traefik containers
-  when: jellyfin_files.changed or output.services.jellyfin.jellyfin.state.running
+- name: Stop previous jellyfin containers
+  when: jellyfin_files.changed and output.services.jellyfin.jellyfin.state.running
   community.docker.docker_compose:
     project_src: "{{ jellyfin_folder }}"
     state: absent

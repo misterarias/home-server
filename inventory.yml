@@ -3,11 +3,13 @@ home:
   hosts:
     billy:
   vars:
+    docker_compose_version: "3.3"
     jellyfin_service_port: 8096
     compose_folder: "/srv"
     traefik_folder: "{{ compose_folder }}/traefik"
     traefik_network_name: home_network
     jellyfin_folder: "{{ compose_folder }}/jellyfin"
+    pihole_folder: "{{ compose_folder }}/pihole"
     samba:
       server: 192.168.1.33
       config_dir: /etc/samba

@@ -1,0 +1,37 @@
+---
+version: "{{ docker_compose_version }}"
+
+networks:
+  {{ traefik_network_name }}:
+    external: true
+
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole:
+    networks:
+      - {{ traefik_network_name }}
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    dns:
+      - 127.0.0.1
+      - 9.9.9.9
+    environment:
+      TZ: "Europe/Madrid"
+      WEBPASSWORD: "Testing"
+      # As recommended by https://www.privacytools.io/encrypted-dns-resolver/
+      PIHOLE_DNS_: 9.9.9.9;149.112.112.112;1.1.1.1
+      DNSSEC: 'true'
+      ServerIP: "{{ host_ip }}"
+      VIRTUAL_HOST: "pihole.{{ inventory_hostname}}"
+    volumes:
+      - {{ pihole_folder }}/etc-pihole:/etc/pihole
+      - {{ pihole_folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.{{ inventory_hostname }}`)"
+      #- "traefik.http.services.pihole.loadbalancer.server.port=80"
+      - "traefik.http.routers.pihole.entrypoints=http"
