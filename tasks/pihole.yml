@@ -17,7 +17,7 @@
     dest: "{{ pihole_folder }}/{{ item }}"
   loop:
     - docker-compose.yml
-    - etc-pihole/custom-list
+    - etc-pihole/custom.list
   register: pihole_files
 
 # Disable port 53 in host so we can use pihole: https://github.com/pi-hole/docker-pi-hole/#running-pi-hole-docker
