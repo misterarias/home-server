@@ -36,7 +36,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.jellyfin.entrypoints=http'
-      - 'traefik.http.routers.jellyfin.service=jellyfin-svc@file'
+      #- 'traefik.http.routers.jellyfin.service=jellyfin-svc@file'
       - 'traefik.http.routers.jellyfin.rule=Host(`jellyfin.{{ inventory_hostname }}`)'
       - 'traefik.http.services.jellyfin-svc.loadBalancer.server.port=8096'
       - 'traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader=true'

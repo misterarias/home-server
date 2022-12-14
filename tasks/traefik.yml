@@ -22,7 +22,6 @@
   loop:
     - docker-compose.yml
     - traefik.toml
-    - traefik-provider.toml
   register: traefik_files
 
 - name: Get current status
