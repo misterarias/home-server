@@ -27,14 +27,17 @@
     path: /etc/systemd/resolved.conf
     regex: '.*DNSStubListener.*'
     line: DNSStubListener=no
+  register: resolv_file
 
 - name: Delete system resolv.conf
+  when: resolv_file.changed
   become: true
   ansible.builtin.file:
     state: absent
     path: /etc/resolv.conf
 
 - name: Symlink resolve file to systemd
+  when: resolv_file.changed
   become: true
   ansible.builtin.file:
     state: link
@@ -42,6 +45,7 @@
     dest: /etc/resolv.conf
 
 - name: Restart systemd-resolved
+  when: resolv_file.changed
   become: true
   ansible.builtin.systemd:
     state: restarted

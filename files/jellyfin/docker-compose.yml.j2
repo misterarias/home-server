@@ -34,9 +34,10 @@ services:
     #- /dev/dri/renderD128:/dev/dri/renderD128
     #- /dev/dri/card0:/dev/dri/card0
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.jellyfin.entrypoints=http'
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.jellyfin.entrypoints: http
       #- 'traefik.http.routers.jellyfin.service=jellyfin-svc@file'
-      - 'traefik.http.routers.jellyfin.rule=Host(`jellyfin.{{ inventory_hostname }}`)'
-      - 'traefik.http.services.jellyfin-svc.loadBalancer.server.port=8096'
-      - 'traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader=true'
+      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.{{ inventory_hostname }}`)"
+      trtraefik.http.services.jellyfin-svc.loadBalancer.server.port: 8096
+      trtraefik.http.services.jellyfin-svc.loadBalancer.passHostHeader: true

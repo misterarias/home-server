@@ -31,7 +31,8 @@ services:
       # - {{ pihole_folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
     restart: unless-stopped
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`pihole.{{ inventory_hostname }}`)"
-      - "traefik.http.services.pihole.loadbalancer.server.port=80"
-      - "traefik.http.routers.pihole.entrypoints=http"
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.pihole.rule: "Host(`pihole.{{ inventory_hostname }}`)"
+      #traefik.http.services.pihole.loadbalancer.server.port: "80"
+      traefik.http.routers.pihole.entrypoints: http
