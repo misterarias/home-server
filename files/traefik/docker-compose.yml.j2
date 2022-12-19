@@ -29,14 +29,5 @@ services:
       org.label-schema.group: "monitoring"
       traefik.enable: true
       traefik.http.routers.traefik.rule: "Host(`traefik.{{ inventory_hostname }}`)"
-      traefik.http.services.traefik.loadbalancer.server.port: 8080
+      traefik.http.services.traefik.loadbalancer.server.port: {{ stacks.traefik.service_port }}
       traefik.http.routers.traefik.entrypoints: http
-
-  whoami:
-    image: traefik/whoami
-    container_name: whoami
-    labels:
-      - "traefik.enable=true"
-      - 'traefik.http.routers.whoami.rule=Host(`whoami.{{ inventory_hostname }}`)'
-      - "traefik.http.routers.whoami.entrypoints=http"
-

@@ -34,5 +34,5 @@ services:
       org.label-schema.group: "monitoring"
       traefik.enable: true
       traefik.http.routers.pihole.rule: "Host(`pihole.{{ inventory_hostname }}`)"
-      traefik.http.services.pihole.loadbalancer.server.port: "80"
+      traefik.http.services.pihole.loadbalancer.server.port: {{ stacks.pihole.service_port }}
       traefik.http.routers.pihole.entrypoints: http

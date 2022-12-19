@@ -16,23 +16,35 @@ scrape_configs:
   - job_name: 'nodeexporter'
     scrape_interval: 5s
     static_configs:
-      - targets: ['nodeexporter.{{ inventory_hostname }}']
+      - targets: ['nodeexporter:{{ stacks.prometheus.services.nodeexporter.service_port }}']
 
   - job_name: 'cadvisor'
     scrape_interval: 5s
     static_configs:
-      - targets: ['cadvisor.{{ inventory_hostname }}']
+      - targets: ['cadvisor:{{ stacks.prometheus.services.cadvisor.service_port }}']
 
   - job_name: 'prometheus'
     scrape_interval: 10s
     static_configs:
-      - targets: ['prometheus.{{ inventory_hostname }}']
+      - targets: ['prometheus.{{ stacks.prometheus.service_port }}']
 
-  - job_name: 'pushgateway'
+  - job_name: 'jellyfin'
     scrape_interval: 10s
     honor_labels: true
     static_configs:
-      - targets: ['pushgateway.{{ inventory_hostname }}']
+      - targets: ['jellyfin.{{ stacks.jellyfin.service_port }}']
+
+  - job_name: 'traefik'
+    scrape_interval: 10s
+    honor_labels: true
+    static_configs:
+      - targets: ['traefik.{{ stacks.traefik.service_port }}']
+
+  - job_name: 'pihole'
+    scrape_interval: 10s
+    honor_labels: true
+    static_configs:
+      - targets: ['pihole.{{ stacks.pihole.service_port }}']
 
 
 #alerting:

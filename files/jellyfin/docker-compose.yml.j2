@@ -19,8 +19,6 @@ services:
     group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
       - '989' # render
       - '985' # video
-    ports:
-    - 8096:8096
     volumes:
       # NOTE: local folder, to avoid sqlite + samba problems
       - {{ stacks.jellyfin.folder }}/config:/config
@@ -37,7 +35,6 @@ services:
       org.label-schema.group: "monitoring"
       traefik.enable: true
       traefik.http.routers.jellyfin.entrypoints: http
-      #- 'traefik.http.routers.jellyfin.service=jellyfin-svc@file'
       traefik.http.routers.jellyfin.rule: "Host(`jellyfin.{{ inventory_hostname }}`)"
-      trtraefik.http.services.jellyfin-svc.loadBalancer.server.port: 8096
-      trtraefik.http.services.jellyfin-svc.loadBalancer.passHostHeader: true
+      traefik.http.services.jellyfin-svc.loadBalancer.server.port: {{ stacks.jellyfin.service_port }}
+      traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader: true

@@ -4,16 +4,24 @@ stacks:
   traefik:
     folder: "{{ compose_folder }}/traefik"
     network_name: home_network
+    service_port: 8080
   pihole:
     folder: "{{ compose_folder }}/pihole"
-  whoami: {}
+    service_port: 80
   jellyfin:
     folder: "{{ compose_folder }}/jellyfin"
     service_port: 8096
   prometheus:
     folder: "{{ compose_folder }}/prometheus"
+    service_port: 9090
+    services:
+      nodeexporter:
+        service_port: 9100
+      cadvisor:
+        service_port: 8080
   grafana:
     folder: "{{ compose_folder }}/prometheus/grafana"
+    service_port: 3000
 
 docker_compose_version: "3.3"
 samba:
