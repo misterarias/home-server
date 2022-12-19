@@ -1,0 +1,53 @@
+---
+- name: Create Prometheus directories
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+  loop:
+    - "{{ stacks.prometheus.folder }}"
+    - "{{ stacks.prometheus.folder }}/etc"
+    - "{{ stacks.prometheus.folder }}/data"
+    - "{{ stacks.grafana.folder }}/data"
+    - "{{ stacks.grafana.folder }}/provisioning/dashboards"
+    - "{{ stacks.grafana.folder }}/provisioning/datasources"
+
+- name: Render Prometheus files
+  template:
+    src: "files/prometheus/{{ item }}.j2"
+    dest: "{{ stacks.prometheus.folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+    - etc/alert.rules
+    - etc/prometheus.yml
+  register: prometheus_files
+
+- name: Copy Grafana files
+  copy:
+    src: "files/prometheus/grafana/provisioning"
+    dest: "{{ stacks.grafana.folder }}"
+    owner: 1000
+    group: 1000
+    mode: 0644
+  register: grafana_files
+
+- name: Get current status
+  community.docker.docker_compose:
+    project_src: "{{ stacks.prometheus.folder }}"
+    build: false
+  register: output
+
+- name: Stop previous prometheus containers
+  when: (grafana_files.changed or prometheus_files.changed) and output.services.prometheus.prometheus.state.running
+  community.docker.docker_compose:
+    project_src: "{{ stacks.prometheus.folder }}"
+    state: absent
+  register: output
+
+- name: Create and start services
+  when: prometheus_files.changed or grafana_files.changed  or output.changed
+  community.docker.docker_compose:
+    project_src: "{{ stacks.prometheus.folder }}"

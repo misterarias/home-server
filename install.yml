@@ -3,6 +3,8 @@
   hosts: home
   gather_facts: true
   tasks:
+    - include_vars: vars/main.yml
+
     - name: Get current user
       command: whoami
       register: whoami_output
@@ -17,19 +19,22 @@
 
     - name: Get docker network information
       community.docker.docker_network_info:
-        name: "{{ traefik_network_name }}"
+        name: "{{ stacks.traefik.network_name }}"
       register: result
 
     - name: Create docker network for traefik and the rest of services
       when: not result.exists
       community.docker.docker_network:
-        name: "{{ traefik_network_name }}"
+        name: "{{ stacks.traefik.network_name }}"
 
-    - name: Run Traefik
+    - name: Prepare Traefik
       include_tasks: tasks/traefik.yml
 
-    - name: Run jellyfin
+    - name: Prepare Jellyfin
       include_tasks: tasks/jellyfin.yml
 
-    - name: Run Pihole
+    - name: Prepare Pihole
       include_tasks: tasks/pihole.yml
+
+    - name: Prepare Prometheus
+      include_tasks: tasks/prometheus.yml

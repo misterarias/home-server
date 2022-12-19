@@ -3,14 +3,14 @@
   become: true
   file:
     state: directory
-    path: "{{ traefik_folder }}"
+    path: "{{ stacks.traefik.folder }}"
     owner: "{{ installation_user }}"
     mode: 0777
 
 - name: Touch log file
   copy:
     content: ""
-    dest: "{{ traefik_folder }}/traefik.log"
+    dest: "{{ stacks.traefik.folder }}/traefik.log"
     force: false
     owner: "{{ installation_user }}"
     mode: 0777
@@ -18,7 +18,7 @@
 - name: Render traefik files
   template:
     src: "files/traefik/{{ item }}.j2"
-    dest: "{{ traefik_folder }}/{{ item }}"
+    dest: "{{ stacks.traefik.folder }}/{{ item }}"
   loop:
     - docker-compose.yml
     - traefik.toml
@@ -26,18 +26,18 @@
 
 - name: Get current status
   community.docker.docker_compose:
-    project_src: "{{ traefik_folder }}"
+    project_src: "{{ stacks.traefik.folder }}"
     build: false
   register: output
 
 - name: Stop previous traefik containers
   when: traefik_files.changed and output.services.traefik.traefik.state.running
   community.docker.docker_compose:
-    project_src: "{{ traefik_folder }}"
+    project_src: "{{ stacks.traefik.folder }}"
     state: absent
   register: output
 
 - name: Create and start services
   when: traefik_files.changed or output.changed
   community.docker.docker_compose:
-    project_src: "{{ traefik_folder }}"
+    project_src: "{{ stacks.traefik.folder }}"

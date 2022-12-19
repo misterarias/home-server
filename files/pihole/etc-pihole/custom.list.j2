@@ -1,3 +1,7 @@
-{% for _service in services.keys()  %}
-{{ host_ip }} {{ _service }}.{{ inventory_hostname }}
+{% for _stack in stacks.keys()  %}
+{{ host_ip }} {{ _stack }}.{{ inventory_hostname }}
 {% endfor %}
+# TODO: automatize
+{{ host_ip }} nodeexporter.{{ inventory_hostname }}
+{{ host_ip }} cadvisor{{ inventory_hostname }}
+{{ host_ip }} grafana.{{ inventory_hostname }}

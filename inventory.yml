@@ -2,37 +2,3 @@
 home:
   hosts:
     billy:
-  vars:
-    # TODO: Refactor stuff so variables are contained inside their service
-    services:
-      traefik: {}
-      pihole: {}
-      whoami: {}
-      jellyfin: {}
-
-    docker_compose_version: "3.3"
-    jellyfin_service_port: 8096
-    compose_folder: "/srv"
-    traefik_folder: "{{ compose_folder }}/traefik"
-    traefik_network_name: home_network
-    jellyfin_folder: "{{ compose_folder }}/jellyfin"
-    pihole_folder: "{{ compose_folder }}/pihole"
-    samba:
-      server: 192.168.1.33
-      config_dir: /etc/samba
-      credentials_file: /etc/samba/credentials
-    samba_fstab_options: |
-      credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm
-    shares:
-      jellyfin:
-        folder: "//{{ samba.server }}/video/jellyfin"
-        mount_point: "/mnt/shared/jellyfin/"
-      movies:
-        folder: "//{{ samba.server }}/video/Peliz"
-        mount_point: "/mnt/shared/movies"
-      shows:
-        folder: "//{{ samba.server }}/video/Zeriez"
-        mount_point: "/mnt/shared/shows"
-      books:
-        folder: "//{{ samba.server }}/Bookz"
-        mount_point: "/mnt/shared/books"

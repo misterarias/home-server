@@ -3,7 +3,7 @@
   become: true
   file:
     state: directory
-    path: "{{ jellyfin_folder }}"
+    path: "{{ stacks.jellyfin.folder }}"
     owner: 1000
     group: 1000
     mode: 0777
@@ -31,25 +31,25 @@
 - name: Render jellyfin files
   template:
     src: "files/jellyfin/{{ item }}.j2"
-    dest: "{{ jellyfin_folder }}/{{ item }}"
+    dest: "{{ stacks.jellyfin.folder }}/{{ item }}"
   loop:
     - docker-compose.yml
   register: jellyfin_files
 
 - name: Get current status
   community.docker.docker_compose:
-    project_src: "{{ jellyfin_folder }}"
+    project_src: "{{ stacks.jellyfin.folder }}"
     build: false
   register: output
 
 - name: Stop previous jellyfin containers
   when: jellyfin_files.changed and output.services.jellyfin.jellyfin.state.running
   community.docker.docker_compose:
-    project_src: "{{ jellyfin_folder }}"
+    project_src: "{{ stacks.jellyfin.folder }}"
     state: absent
   register: output
 
 - name: Create and start services
   when: jellyfin_files.changed or output.changed
   community.docker.docker_compose:
-    project_src: "{{ jellyfin_folder }}"
+    project_src: "{{ stacks.jellyfin.folder }}"

@@ -3,6 +3,8 @@
   hosts: home
   gather_facts: false   # needs python
   tasks:
+    - include_vars: vars/main.yml
+
     - name: Install needed software
       include_tasks: tasks/packages.yml
 

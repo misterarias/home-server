@@ -2,14 +2,14 @@
 version: "{{ docker_compose_version }}"
 
 networks:
-  {{ traefik_network_name }}:
+  {{ stacks.traefik.network_name }}:
     external: true
 
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   pihole:
     networks:
-      - {{ traefik_network_name }}
+      - {{ stacks.traefik.network_name }}
     container_name: pihole
     image: pihole/pihole:latest
     ports:
@@ -27,12 +27,12 @@ services:
       ServerIP: "{{ host_ip }}"
       VIRTUAL_HOST: "pihole.{{ inventory_hostname}}"
     volumes:
-      - {{ pihole_folder }}/etc-pihole:/etc/pihole
-      # - {{ pihole_folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
+      - {{ stacks.pihole.folder }}/etc-pihole:/etc/pihole
+      # - {{ stacks.pihole.folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
       traefik.http.routers.pihole.rule: "Host(`pihole.{{ inventory_hostname }}`)"
-      #traefik.http.services.pihole.loadbalancer.server.port: "80"
+      traefik.http.services.pihole.loadbalancer.server.port: "80"
       traefik.http.routers.pihole.entrypoints: http

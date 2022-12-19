@@ -8,13 +8,13 @@
     group: 1000
     mode: 0777
   loop:
-    - "{{ pihole_folder }}"
-    - "{{ pihole_folder }}/etc-pihole"
+    - "{{ stacks.pihole.folder }}"
+    - "{{ stacks.pihole.folder }}/etc-pihole"
 
 - name: Render pihole files
   template:
     src: "files/pihole/{{ item }}.j2"
-    dest: "{{ pihole_folder }}/{{ item }}"
+    dest: "{{ stacks.pihole.folder }}/{{ item }}"
   loop:
     - docker-compose.yml
     - etc-pihole/custom.list
@@ -53,18 +53,18 @@
 
 - name: Get current status
   community.docker.docker_compose:
-    project_src: "{{ pihole_folder }}"
+    project_src: "{{ stacks.pihole.folder }}"
     build: false
   register: output
 
 - name: Stop previous pihole containers
   when: pihole_files.changed and output.services.pihole.pihole.state.running
   community.docker.docker_compose:
-    project_src: "{{ pihole_folder }}"
+    project_src: "{{ stacks.pihole.folder }}"
     state: absent
   register: output
 
 - name: Create and start services
   when: pihole_files.changed or output.changed
   community.docker.docker_compose:
-    project_src: "{{ pihole_folder }}"
+    project_src: "{{ stacks.pihole.folder }}"
