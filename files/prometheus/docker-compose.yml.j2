@@ -46,9 +46,6 @@ services:
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
-      traefik.http.routers.nodeexporter.rule: "Host(`nodeexporter.{{ inventory_hostname }}`)"
-      traefik.http.services.nodeexporter.loadbalancer.server.port: {{ stacks.prometheus.services.nodeexporter.service_port }}
-      traefik.http.routers.nodeexporter.entrypoints: http
 
   cadvisor:
     networks:
@@ -69,9 +66,6 @@ services:
       - 8080
     labels:
       org.label-schema.group: "monitoring"
-      traefik.http.routers.cadvisor.rule: "Host(`cadvisor.{{ inventory_hostname }}`)"
-      traefik.http.services.cadvisor.loadbalancer.server.port: {{ stacks.prometheus.services.cadvisor.service_port }}
-      traefik.http.routers.cadvisor.entrypoints: http
 
   grafana:
     networks:
