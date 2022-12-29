@@ -1,5 +1,8 @@
 {% for _stack in stacks.keys()  %}
 {{ host_ip }} {{ _stack }}.{{ inventory_hostname }}
+{% if stacks[_stack].services is defined %}
+{% for _service in stacks[_stack].services.keys() %}
+{{ host_ip }} {{ _service }}.{{ _stack }}.{{ inventory_hostname }}
 {% endfor %}
-# TODO: separate from prometheus stack
-{{ host_ip }} grafana.{{ inventory_hostname }}
+{% endif %}
+{% endfor %}

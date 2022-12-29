@@ -46,6 +46,10 @@ services:
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.nodeexporter.rule: "Host(`nodeexporter.prometheus.{{ inventory_hostname }}`)"
+      traefik.http.services.nodeexporter.loadbalancer.server.port: {{ stacks.prometheus.services.nodeexporter.service_port }}
+      traefik.http.routers.nodeexporter.entrypoints: http
 
   cadvisor:
     networks:
@@ -62,10 +66,12 @@ services:
       - /var/lib/docker:/var/lib/docker:ro
       - /cgroup:/cgroup:ro
     restart: unless-stopped
-    expose:
-      - 8080
     labels:
       org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.cadvisor.rule: "Host(`cadvisor.prometheus.{{ inventory_hostname }}`)"
+      traefik.http.services.cadvisor.loadbalancer.server.port: {{ stacks.prometheus.services.cadvisor.service_port }}
+      traefik.http.routers.cadvisor.entrypoints: http
 
   grafana:
     networks:
