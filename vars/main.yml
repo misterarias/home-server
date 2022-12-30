@@ -20,7 +20,7 @@ stacks:
       cadvisor:
         service_port: 8080
   grafana:
-    folder: "{{ compose_folder }}/prometheus/grafana"
+    folder: "{{ compose_folder }}/grafana"
     service_port: 3000
 
 docker_compose_version: "3.3"

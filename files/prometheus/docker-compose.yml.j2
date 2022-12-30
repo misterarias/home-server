@@ -72,24 +72,3 @@ services:
       traefik.http.routers.cadvisor.rule: "Host(`cadvisor.prometheus.{{ inventory_hostname }}`)"
       traefik.http.services.cadvisor.loadbalancer.server.port: {{ stacks.prometheus.services.cadvisor.service_port }}
       traefik.http.routers.cadvisor.entrypoints: http
-
-  grafana:
-    networks:
-      - {{ stacks.traefik.network_name }}
-    image: grafana/grafana:9.2.4
-    container_name: grafana
-    volumes:
-      - {{ stacks.grafana.folder }}/data:/var/lib/grafana
-      - {{ stacks.grafana.folder }}/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - {{ stacks.grafana.folder }}/provisioning/datasources:/etc/grafana/provisioning/datasources
-    environment:
-      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
-      - GF_USERS_ALLOW_SIGN_UP=false
-    restart: unless-stopped
-    labels:
-      org.label-schema.group: "monitoring"
-      traefik.enable: true
-      traefik.http.routers.grafana.rule: "Host(`grafana.{{ inventory_hostname }}`)"
-      traefik.http.services.grafana.loadbalancer.server.port: {{ stacks.grafana.service_port }}
-      traefik.http.routers.grafana.entrypoints: http

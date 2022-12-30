@@ -1,0 +1,26 @@
+---
+- set_fact:
+    compose_name: "{{ _stack.key }}"
+    compose_folder: "{{ _stack.value.folder }}"
+
+- name: Get current status
+  community.docker.docker_compose:
+    project_src: "{{ compose_folder }}"
+    build: false
+  register: output
+
+- name: Stop previous prometheus containers
+  when: output.services[compose_name][compose_name].state.running
+  community.docker.docker_compose:
+    project_src: "{{ compose_folder }}"
+    state: absent
+  register: output
+
+- name: Create and start services
+  when: output.changed
+  community.docker.docker_compose:
+    project_src: "{{ compose_folder }}"
+
+- set_fact:
+    compose_folder:
+    compose_name:

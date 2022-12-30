@@ -1,0 +1,36 @@
+---
+- name: Create Grafana directories
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+  loop:
+    - "{{ stacks.grafana.folder }}/data"
+    - "{{ stacks.grafana.folder }}/provisioning/dashboards"
+    - "{{ stacks.grafana.folder }}/provisioning/datasources"
+
+- name: Render Grafana files
+  template:
+    src: "files/grafana/{{ item }}.j2"
+    dest: "{{ stacks.grafana.folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+    - provisioning/datasources/datasource.yml
+  register: grafana_templates
+
+- name: Copy Grafana files
+  copy:
+    src: "files/grafana/provisioning"
+    dest: "{{ stacks.grafana.folder }}"
+    owner: 1000
+    group: 1000
+    mode: 0644
+  register: grafana_dashboards
+
+- name: Set variable for Grafana changes
+  set_fact:
+    grafana_files:
+      changed: grafana_dashboards.changed or grafana_templates.changed

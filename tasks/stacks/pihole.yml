@@ -50,21 +50,3 @@
   ansible.builtin.systemd:
     state: restarted
     name: systemd-resolved
-
-- name: Get current status
-  community.docker.docker_compose:
-    project_src: "{{ stacks.pihole.folder }}"
-    build: false
-  register: output
-
-- name: Stop previous pihole containers
-  when: pihole_files.changed and output.services.pihole.pihole.state.running
-  community.docker.docker_compose:
-    project_src: "{{ stacks.pihole.folder }}"
-    state: absent
-  register: output
-
-- name: Create and start services
-  when: pihole_files.changed or output.changed
-  community.docker.docker_compose:
-    project_src: "{{ stacks.pihole.folder }}"

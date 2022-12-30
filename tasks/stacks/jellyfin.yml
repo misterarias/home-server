@@ -35,21 +35,3 @@
   loop:
     - docker-compose.yml
   register: jellyfin_files
-
-- name: Get current status
-  community.docker.docker_compose:
-    project_src: "{{ stacks.jellyfin.folder }}"
-    build: false
-  register: output
-
-- name: Stop previous jellyfin containers
-  when: jellyfin_files.changed and output.services.jellyfin.jellyfin.state.running
-  community.docker.docker_compose:
-    project_src: "{{ stacks.jellyfin.folder }}"
-    state: absent
-  register: output
-
-- name: Create and start services
-  when: jellyfin_files.changed or output.changed
-  community.docker.docker_compose:
-    project_src: "{{ stacks.jellyfin.folder }}"

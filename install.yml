@@ -27,14 +27,15 @@
       community.docker.docker_network:
         name: "{{ stacks.traefik.network_name }}"
 
-    - name: Prepare Traefik
-      include_tasks: tasks/traefik.yml
+    - name: Prepare Stacks
+      include_tasks: "tasks/stacks/{{ _stack.key }}.yml"
+      loop: "{{ stacks|dict2items }}"
+      loop_control:
+        loop_var: _stack
 
-    - name: Prepare Jellyfin
-      include_tasks: tasks/jellyfin.yml
-
-    - name: Prepare Pihole
-      include_tasks: tasks/pihole.yml
-
-    - name: Prepare Prometheus
-      include_tasks: tasks/prometheus.yml
+    - name: Restart stack containers if needed
+      when: "{{ _stack.key }}_files.changed"
+      include_tasks: tasks/tools/compose.yml
+      loop: "{{ stacks|dict2items }}"
+      loop_control:
+        loop_var: _stack
