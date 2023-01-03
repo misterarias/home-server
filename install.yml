@@ -23,7 +23,6 @@
         loop_var: _stack
 
     - name: Restart stack containers if needed
-      when: "{{ _stack.key }}_files.changed"
       include_tasks: tasks/tools/compose.yml
       loop: "{{ stacks|dict2items }}"
       loop_control:

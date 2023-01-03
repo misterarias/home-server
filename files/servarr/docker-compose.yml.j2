@@ -45,3 +45,4 @@ services:
       traefik.http.routers.prowlarr.rule: "Host(`{{ stacks.servarr.services.prowlarr.url }}`)"
       traefik.http.services.prowlarr.loadbalancer.server.port: {{ stacks.servarr.services.prowlarr.service_port }}
       traefik.http.routers.prowlarr.entrypoints: http
+      traefik.http.services.prowlarr.loadBalancer.passHostHeader: true

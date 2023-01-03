@@ -1,28 +1,31 @@
 ---
-- name: Set stack variables
+- name: "Set compose variables for '{{ _stack.key }}' stack"
   set_fact:
-    compose_name: "{{ _stack.key }}"
     compose_folder: "{{ _stack.value.folder }}"
+    compose_files_changed: "{{ lookup('vars', '{{ _stack.key }}_files').changed }}"
 
-- name: "Get current status for {{ _stack.key }}"
+# NOTE: this will bring containers up if they are down
+- name: "Get current status for '{{ _stack.key }}' stack"
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
     build: false
-  register: output
+  register: container_status
 
-- name: "Stop previous {{ _stack.key }} containers"
-  when: output.services[compose_name][compose_name].state.running
+# If stack was up but files changed, we need to tear down now
+- name: "Stop previous '{{ _stack.key }}' stack's containers if files have changed"
+  when: compose_files_changed and not container_status.changed
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
     state: absent
-  register: output
+  register: container_status
 
-- name: "Create and start {{ _stack.key }} services"
-  when: output.changed
+- name: "Create and start '{{ _stack.key }}' stack's containers"
+  when: container_status.changed
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
 
-- name: Clear stack variables
+- name: "Clear compose variables for '{{ _stack.key }}' stack"
   set_fact:
     compose_folder:
-    compose_name:
+    compose_files_changed:
+    container_status:
