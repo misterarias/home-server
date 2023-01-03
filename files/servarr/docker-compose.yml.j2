@@ -28,6 +28,8 @@ services:
       traefik.http.routers.radarr.entrypoints: http
 
   prowlarr:
+    networks:
+      - {{ stacks.traefik.network_name }}
     image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
     environment:
