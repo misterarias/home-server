@@ -3,29 +3,20 @@
   set_fact:
     compose_folder: "{{ _stack.value.folder }}"
     compose_files_changed: "{{ lookup('vars', '{{ _stack.key }}_files').changed }}"
+    compose_recreate: smart
 
-# NOTE: this will bring containers up if they are down
-- name: "Get current status for '{{ _stack.key }}' stack"
-  community.docker.docker_compose:
-    project_src: "{{ compose_folder }}"
-    build: false
-  register: container_status
-
-# If stack was up but files changed, we need to tear down now
-- name: "Stop previous '{{ _stack.key }}' stack's containers if files have changed"
-  when: compose_files_changed and not container_status.changed
-  community.docker.docker_compose:
-    project_src: "{{ compose_folder }}"
-    state: absent
-  register: container_status
+- name: "Set recreation to 'always' if files have changed"
+  when: compose_files_changed
+  set_fact:
+    compose_recreate: always
 
 - name: "Create and start '{{ _stack.key }}' stack's containers"
-  when: container_status.changed
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
+    recreate: "{{ compose_recreate }}"
 
 - name: "Clear compose variables for '{{ _stack.key }}' stack"
   set_fact:
     compose_folder:
     compose_files_changed:
-    container_status:
+    compose_recreate:
