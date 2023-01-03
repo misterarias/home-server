@@ -25,7 +25,7 @@ services:
       PIHOLE_DNS_: 9.9.9.9;149.112.112.112;1.1.1.1
       DNSSEC: 'true'
       ServerIP: "{{ host_ip }}"
-      VIRTUAL_HOST: "pihole.{{ inventory_hostname}}"
+      VIRTUAL_HOST: "{{ stacks.pihole.url }}"
     volumes:
       - {{ stacks.pihole.folder }}/etc-pihole:/etc/pihole
       # - {{ stacks.pihole.folder }}/etc-dnsmasq.d:/etc/dnsmasq.d
@@ -33,6 +33,6 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.pihole.rule: "Host(`pihole.{{ inventory_hostname }}`)"
+      traefik.http.routers.pihole.rule: "Host(`{{ stacks.pihole.url }}`)"
       traefik.http.services.pihole.loadbalancer.server.port: {{ stacks.pihole.service_port }}
       traefik.http.routers.pihole.entrypoints: http

@@ -4,7 +4,8 @@
   file:
     state: directory
     path: "{{ stacks.traefik.folder }}"
-    owner: "{{ installation_user }}"
+    owner: 1000
+    group: 1000
     mode: 0777
 
 - name: Touch log file
@@ -12,7 +13,8 @@
     content: ""
     dest: "{{ stacks.traefik.folder }}/traefik.log"
     force: false
-    owner: "{{ installation_user }}"
+    owner: 1000
+    group: 1000
     mode: 0777
 
 - name: Render traefik files

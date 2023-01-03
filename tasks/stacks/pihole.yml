@@ -1,4 +1,8 @@
 ---
+- name: Register Host IP
+  set_fact:
+    host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
 - name: Create Pihole directories
   become: true
   file:

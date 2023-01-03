@@ -1,8 +1,12 @@
 {% for _stack in stacks.keys()  %}
-{{ host_ip }} {{ _stack }}.{{ inventory_hostname }}
+{% if stacks[_stack].url is defined %}
+{{ host_ip }} {{ stacks[_stack].url }}
+{% endif %}
 {% if stacks[_stack].services is defined %}
 {% for _service in stacks[_stack].services.keys() %}
-{{ host_ip }} {{ _service }}.{{ _stack }}.{{ inventory_hostname }}
+{% if stacks[_stack].services[_service].url is defined %}
+{{ host_ip }} {{ stacks[_stack].services[_service].url }}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endfor %}

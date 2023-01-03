@@ -15,7 +15,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
-      - JELLYFIN_PublishedServerUrl=jellyfin.{{ inventory_hostname }}
+      - JELLYFIN_PublishedServerUrl={{ stacks.jellyfin.url }}
     group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
       - '989' # render
       - '985' # video
@@ -35,6 +35,6 @@ services:
       org.label-schema.group: "monitoring"
       traefik.enable: true
       traefik.http.routers.jellyfin.entrypoints: http
-      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.{{ inventory_hostname }}`)"
+      traefik.http.routers.jellyfin.rule: "Host(`{{ stacks.jellyfin.url }}`)"
       traefik.http.services.jellyfin-svc.loadBalancer.server.port: {{ stacks.jellyfin.service_port }}
       traefik.http.services.jellyfin-svc.loadBalancer.passHostHeader: true

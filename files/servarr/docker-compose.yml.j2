@@ -12,7 +12,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     volumes:
-      - {{ stacks.radarr.folder }}/:/config
+      - {{ stacks.servarr.services.radarr.folder }}/:/config
       - {{ shares.movies.mount_point }}:/data/movies
       - {{ shares.downloads.mount_point }}:/data/downloads
     environment:
@@ -23,8 +23,8 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.radarr.rule: "Host(`radarr.{{ inventory_hostname }}`)"
-      traefik.http.services.radarr.loadbalancer.server.port: {{ stacks.radarr.service_port }}
+      traefik.http.routers.radarr.rule: "Host(`{{ stacks.servarr.services.radarr.url }}`)"
+      traefik.http.services.radarr.loadbalancer.server.port: {{ stacks.servarr.services.radarr.service_port }}
       traefik.http.routers.radarr.entrypoints: http
 
   prowlarr:
@@ -35,9 +35,13 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     restart: unless-stopped
+    volumes:
+      - {{ stacks.servarr.services.prowlarr.folder }}/:/config
+    ports:
+    - {{ stacks.servarr.services.prowlarr.service_port }}:{{ stacks.servarr.services.prowlarr.service_port }}
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.prowlarr.rule: "Host(`prowlarr.radarr.{{ inventory_hostname }}`)"
-      traefik.http.services.prowlarr.loadbalancer.server.port: {{ stacks.radarr.services.prowlarr.service_port }}
+      traefik.http.routers.prowlarr.rule: "Host(`{{ stacks.servarr.services.prowlarr.url }}`)"
+      traefik.http.services.prowlarr.loadbalancer.server.port: {{ stacks.servarr.services.prowlarr.service_port }}
       traefik.http.routers.prowlarr.entrypoints: http

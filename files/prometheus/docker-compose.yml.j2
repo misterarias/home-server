@@ -25,7 +25,7 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.prometheus.rule: "Host(`prometheus.{{ inventory_hostname }}`)"
+      traefik.http.routers.prometheus.rule: "Host(`{{ stacks.prometheus.url }}`)"
       traefik.http.services.prometheus.loadbalancer.server.port: {{ stacks.prometheus.service_port }}
       traefik.http.routers.prometheus.entrypoints: http
 
@@ -47,7 +47,7 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.nodeexporter.rule: "Host(`nodeexporter.prometheus.{{ inventory_hostname }}`)"
+      traefik.http.routers.nodeexporter.rule: "Host(`{{ stacks.prometheus.services.nodeexporter.url }}`)"
       traefik.http.services.nodeexporter.loadbalancer.server.port: {{ stacks.prometheus.services.nodeexporter.service_port }}
       traefik.http.routers.nodeexporter.entrypoints: http
 
@@ -69,6 +69,6 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.cadvisor.rule: "Host(`cadvisor.prometheus.{{ inventory_hostname }}`)"
+      traefik.http.routers.cadvisor.rule: "Host(`{{ stacks.prometheus.services.cadvisor.url }}`)"
       traefik.http.services.cadvisor.loadbalancer.server.port: {{ stacks.prometheus.services.cadvisor.service_port }}
       traefik.http.routers.cadvisor.entrypoints: http

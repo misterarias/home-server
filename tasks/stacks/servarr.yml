@@ -1,0 +1,21 @@
+---
+- name: Create 'arr*' stack directories
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+  loop:
+    - "{{ stacks.servarr.folder }}"
+    - "{{ stacks.servarr.services.radarr.folder }}"
+    - "{{ stacks.servarr.services.prowlarr.folder }}"
+
+- name: Render 'arr*' stack files
+  template:
+    src: "files/servarr/{{ item }}.j2"
+    dest: "{{ stacks.servarr.folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+  register: servarr_files

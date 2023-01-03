@@ -6,18 +6,6 @@
     - vars/main.yml
     - vars/stacks.yml
   tasks:
-    - name: Get current user
-      command: whoami
-      register: whoami_output
-
-    - name: Register installation_user
-      set_fact:
-        installation_user: "{{ whoami_output.stdout }}"
-
-    - name: Register Host IP
-      set_fact:
-        host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-
     - name: Get docker network information
       community.docker.docker_network_info:
         name: "{{ stacks.traefik.network_name }}"

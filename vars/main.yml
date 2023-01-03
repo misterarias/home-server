@@ -1,6 +1,7 @@
 ---
 compose_folder: "/srv"
 docker_compose_version: "3.3"
+home_domain: home
 samba:
   server: 192.168.1.33
   config_dir: /etc/samba

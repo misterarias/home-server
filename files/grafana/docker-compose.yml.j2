@@ -23,6 +23,6 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.grafana.rule: "Host(`grafana.{{ inventory_hostname }}`)"
+      traefik.http.routers.grafana.rule: "Host(`{{ stacks.grafana.url }}`)"
       traefik.http.services.grafana.loadbalancer.server.port: {{ stacks.grafana.service_port }}
       traefik.http.routers.grafana.entrypoints: http

@@ -28,6 +28,6 @@ services:
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
-      traefik.http.routers.traefik.rule: "Host(`traefik.{{ inventory_hostname }}`)"
+      traefik.http.routers.traefik.rule: "Host(`{{ stacks.traefik.url }}`)"
       traefik.http.services.traefik.loadbalancer.server.port: {{ stacks.traefik.service_port }}
       traefik.http.routers.traefik.entrypoints: http
