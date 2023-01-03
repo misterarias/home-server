@@ -1,34 +1,5 @@
 ---
 compose_folder: "/srv"
-stacks:
-  traefik:
-    folder: "{{ compose_folder }}/traefik"
-    network_name: home_network
-    service_port: 8080
-  pihole:
-    folder: "{{ compose_folder }}/pihole"
-    service_port: 80
-  jellyfin:
-    folder: "{{ compose_folder }}/jellyfin"
-    service_port: 8096
-  prometheus:
-    folder: "{{ compose_folder }}/prometheus"
-    service_port: 9090
-    services:
-      nodeexporter:
-        service_port: 9100
-      cadvisor:
-        service_port: 8080
-  grafana:
-    folder: "{{ compose_folder }}/grafana"
-    service_port: 3000
-  radarr:
-    folder: "{{ compose_folder }}/radarr"
-    service_port: 7878
-    services:
-      prowlarr:
-        service_port: 9696
-
 docker_compose_version: "3.3"
 samba:
   server: 192.168.1.33

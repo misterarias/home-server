@@ -28,9 +28,10 @@
     owner: 1000
     group: 1000
     mode: 0644
+    force: false
   register: grafana_dashboards
 
 - name: Set variable for Grafana changes
   set_fact:
     grafana_files:
-      changed: grafana_dashboards.changed or grafana_templates.changed
+      changed: "{{ grafana_dashboards.changed or grafana_templates.changed | bool }}"

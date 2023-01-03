@@ -1,26 +1,28 @@
 ---
-- set_fact:
+- name: Set stack variables
+  set_fact:
     compose_name: "{{ _stack.key }}"
     compose_folder: "{{ _stack.value.folder }}"
 
-- name: Get current status
+- name: "Get current status for {{ _stack.key }}"
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
     build: false
   register: output
 
-- name: "Stop previous {{ _stack }} containers"
+- name: "Stop previous {{ _stack.key }} containers"
   when: output.services[compose_name][compose_name].state.running
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
     state: absent
   register: output
 
-- name: Create and start services
+- name: "Create and start {{ _stack.key }} services"
   when: output.changed
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
 
-- set_fact:
+- name: Clear stack variables
+  set_fact:
     compose_folder:
     compose_name:

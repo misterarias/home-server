@@ -2,9 +2,10 @@
 - name: Install home server appliances
   hosts: home
   gather_facts: true
+  vars_files:
+    - vars/main.yml
+    - vars/stacks.yml
   tasks:
-    - include_vars: vars/main.yml
-
     - name: Get current user
       command: whoami
       register: whoami_output
