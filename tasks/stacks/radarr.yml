@@ -1,0 +1,19 @@
+---
+- name: Create Radarr directories
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+  loop:
+    - "{{ stacks.radarr.folder }}/data"
+
+- name: Render Radarrr files
+  template:
+    src: "files/radarr/{{ item }}.j2"
+    dest: "{{ stacks.radarr.folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+  register: radarr_files

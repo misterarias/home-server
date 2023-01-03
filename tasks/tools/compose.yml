@@ -9,7 +9,7 @@
     build: false
   register: output
 
-- name: Stop previous prometheus containers
+- name: "Stop previous {{ _stack }} containers"
   when: output.services[compose_name][compose_name].state.running
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"

@@ -1,0 +1,43 @@
+---
+version: "{{ docker_compose_version }}"
+
+networks:
+  {{ stacks.traefik.network_name }}:
+    external: true
+
+services:
+  radarr:
+    networks:
+      - {{ stacks.traefik.network_name }}
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    volumes:
+      - {{ stacks.radarr.folder }}/:/config
+      - {{ shares.movies.mount_point }}:/data/movies
+      - {{ shares.downloads.mount_point }}:/data/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.radarr.rule: "Host(`radarr.{{ inventory_hostname }}`)"
+      traefik.http.services.radarr.loadbalancer.server.port: {{ stacks.radarr.service_port }}
+      traefik.http.routers.radarr.entrypoints: http
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.prowlarr.rule: "Host(`prowlarr.radarr.{{ inventory_hostname }}`)"
+      traefik.http.services.prowlarr.loadbalancer.server.port: {{ stacks.radarr.services.prowlarr.service_port }}
+      traefik.http.routers.prowlarr.entrypoints: http
