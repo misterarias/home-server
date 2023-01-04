@@ -5,7 +5,7 @@ datasources:
     type: prometheus
     access: proxy
     orgId: 1
-    url: http://prometheus:{{ stacks.prometheus.service_port }}
+    url: http://prometheus:{{ stacks.o11y.services.prometheus.service_port }}
     basicAuth: false
     isDefault: true
     editable: true

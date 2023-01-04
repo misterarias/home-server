@@ -14,7 +14,7 @@ services:
     volumes:
       - {{ stacks.servarr.services.radarr.folder }}/:/config
       - {{ shares.movies.mount_point }}:/data/movies
-      - {{ shares.downloads.mount_point }}:/data/downloads
+      - {{ stacks.servarr.downloads }}:/data/downloads
     environment:
       - PUID=1000
       - PGID=1000
@@ -39,12 +39,35 @@ services:
     restart: unless-stopped
     volumes:
       - {{ stacks.servarr.services.prowlarr.folder }}/:/config
-    ports:
-    - {{ stacks.servarr.services.prowlarr.service_port }}:{{ stacks.servarr.services.prowlarr.service_port }}
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
       traefik.http.routers.prowlarr.rule: "Host(`{{ stacks.servarr.services.prowlarr.url }}`)"
       traefik.http.services.prowlarr.loadbalancer.server.port: {{ stacks.servarr.services.prowlarr.service_port }}
       traefik.http.routers.prowlarr.entrypoints: http
-      traefik.http.services.prowlarr.loadBalancer.passHostHeader: true
+
+  downloaderr:
+    networks:
+      - {{ stacks.traefik.network_name }}
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: downloaderr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT={{ stacks.servarr.services.downloaderr.service_port }}
+    volumes:
+      - {{ stacks.servarr.services.downloaderr.folder }}/:/config
+      - {{ stacks.servarr.downloads }}:/downloads
+    ports:
+      - {{ stacks.servarr.services.downloaderr.service_port }}:{{ stacks.servarr.services.downloaderr.service_port }}
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.downloaderr.rule: "Host(`{{ stacks.servarr.services.downloaderr.url }}`)"
+      traefik.http.services.downloaderr.loadbalancer.server.port: {{ stacks.servarr.services.downloaderr.service_port }}
+      traefik.http.routers.downloaderr.entrypoints: http
+      traefik.http.services.downloaderr.loadBalancer.passHostHeader: false

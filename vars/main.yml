@@ -21,6 +21,3 @@ shares:
   books:
     folder: "//{{ samba.server }}/Bookz"
     mount_point: "/mnt/shared/books"
-  downloads:
-    folder: "//{{ samba.server }}/video/downloadz"
-    mount_point: "/mnt/shared/downloads"

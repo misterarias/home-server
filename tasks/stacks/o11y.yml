@@ -1,0 +1,55 @@
+---
+- name: Create directories
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+  loop:
+    - "{{ stacks.o11y.folder }}"
+    - "{{ stacks.o11y.services.prometheus.folder }}"
+    - "{{ stacks.o11y.services.prometheus.folder }}/etc"
+    - "{{ stacks.o11y.services.prometheus.folder }}/data"
+    - "{{ stacks.o11y.services.grafana.folder }}/data"
+    - "{{ stacks.o11y.services.grafana.folder }}/provisioning/dashboards"
+    - "{{ stacks.o11y.services.grafana.folder }}/provisioning/datasources"
+
+- name: Render compose file
+  template:
+    src: "files/o11y/docker-compose.yml.j2"
+    dest: "{{ stacks.o11y.folder }}/docker-compose.yml"
+  register: compose_file
+
+- name: Render Prometheus files
+  template:
+    src: "files/o11y/prometheus/{{ item }}.j2"
+    dest: "{{ stacks.o11y.services.prometheus.folder }}/{{ item }}"
+  loop:
+    - etc/alert.rules
+    - etc/prometheus.yml
+  register: prometheus_files
+
+- name: Render Grafana files
+  template:
+    src: "files/o11y/grafana/{{ item }}.j2"
+    dest: "{{ stacks.o11y.services.grafana.folder }}/{{ item }}"
+  loop:
+    - provisioning/datasources/datasource.yml
+  register: grafana_templates
+
+- name: Copy Grafana files
+  copy:
+    src: "files/o11y/grafana/provisioning"
+    dest: "{{ stacks.o11y.services.grafana.folder }}"
+    owner: 1000
+    group: 1000
+    mode: 0644
+    force: false
+  register: grafana_dashboards
+
+- name: Set variable for changed files
+  set_fact:
+    o11y_files:
+      changed: "{{ grafana_dashboards.changed or grafana_templates.changed or prometheus_files.changed or compose_file.changed | bool }}"

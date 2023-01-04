@@ -13,23 +13,26 @@ stacks:
     url: "jellyfin.{{ home_domain }}"
     folder: "{{ compose_folder }}/jellyfin"
     service_port: 8096
-  prometheus:
-    url: "prometheus.{{ home_domain }}"
-    folder: "{{ compose_folder }}/prometheus"
-    service_port: 9090
+  o11y:
+    folder: "{{ compose_folder }}/o11y"
     services:
+      prometheus:
+        url: "prometheus.{{ home_domain }}"
+        folder: "{{ compose_folder }}/o11y/prometheus"
+        service_port: 9090
       nodeexporter:
         url: "nodeexporter.{{ home_domain }}"
         service_port: 9100
       cadvisor:
         url: "cadvisor.{{ home_domain }}"
         service_port: 8080
-  grafana:
-    url: "grafana.{{ home_domain }}"
-    folder: "{{ compose_folder }}/grafana"
-    service_port: 3000
+      grafana:
+        url: "grafana.{{ home_domain }}"
+        folder: "{{ compose_folder }}/o11y/grafana"
+        service_port: 3000
   servarr:
     folder: "{{ compose_folder }}/servarr/"
+    downloads: "{{ compose_folder }}/servarr/downloads"
     services:
       radarr:
         folder: "{{ compose_folder }}/servarr/radarr"
@@ -39,3 +42,7 @@ stacks:
         folder: "{{ compose_folder }}/servarr/prowlarr"
         service_port: 9696
         url: "prowlarr.{{ home_domain }}"
+      downloaderr:
+        folder: "{{ compose_folder }}/servarr/downloaderr"
+        service_port: 8888
+        url: "downloaderr.{{ home_domain }}"

@@ -9,8 +9,10 @@
     mode: 0777
   loop:
     - "{{ stacks.servarr.folder }}"
+    - "{{ stacks.servarr.downloads }}"
     - "{{ stacks.servarr.services.radarr.folder }}"
     - "{{ stacks.servarr.services.prowlarr.folder }}"
+    - "{{ stacks.servarr.services.downloaderr.folder }}"
 
 - name: Render 'arr*' stack files
   template:

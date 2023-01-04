@@ -16,17 +16,17 @@ scrape_configs:
   - job_name: 'nodeexporter'
     scrape_interval: 5s
     static_configs:
-      - targets: ['nodeexporter:{{ stacks.prometheus.services.nodeexporter.service_port }}']
+      - targets: ['nodeexporter:{{ stacks.o11y.services.nodeexporter.service_port }}']
 
   - job_name: 'cadvisor'
     scrape_interval: 5s
     static_configs:
-      - targets: ['cadvisor:{{ stacks.prometheus.services.cadvisor.service_port }}']
+      - targets: ['cadvisor:{{ stacks.o11y.services.cadvisor.service_port }}']
 
   - job_name: 'prometheus'
     scrape_interval: 10s
     static_configs:
-      - targets: ['prometheus:{{ stacks.prometheus.service_port }}']
+      - targets: ['prometheus:{{ stacks.o11y.services.prometheus.service_port }}']
 
   - job_name: 'jellyfin'
     scrape_interval: 10s
