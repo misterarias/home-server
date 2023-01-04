@@ -2,13 +2,13 @@
 version: "{{ docker_compose_version }}"
 
 networks:
-  {{ stacks.traefik.network_name }}:
+  {{ docker.network_name }}:
     external: true
 
 services:
   traefik:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: traefik:v2.9
     container_name: traefik
     restart: unless-stopped

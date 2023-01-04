@@ -3,7 +3,6 @@ stacks:
   traefik:
     url: "traefik.{{ home_domain }}"
     folder: "{{ compose_folder }}/traefik"
-    network_name: home_network
     service_port: 8080
   pihole:
     url: "pihole.{{ home_domain }}"
@@ -46,3 +45,7 @@ stacks:
         folder: "{{ compose_folder }}/servarr/downloaderr"
         service_port: 8888
         url: "downloaderr.{{ home_domain }}"
+      sonarr:
+        folder: "{{ compose_folder }}/servarr/sonarr"
+        service_port: 8989
+        url: "sonarr.{{ home_domain }}"

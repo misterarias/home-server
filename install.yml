@@ -8,13 +8,13 @@
   tasks:
     - name: Get docker network information
       community.docker.docker_network_info:
-        name: "{{ stacks.traefik.network_name }}"
+        name: "{{ docker.network_name }}"
       register: result
 
     - name: Create docker network for traefik and the rest of services
       when: not result.exists
       community.docker.docker_network:
-        name: "{{ stacks.traefik.network_name }}"
+        name: "{{ docker.network_name }}"
 
     - name: Prepare Stacks
       include_tasks: "tasks/stacks/{{ _stack.key }}.yml"

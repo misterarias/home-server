@@ -10,9 +10,16 @@
   loop:
     - "{{ stacks.servarr.folder }}"
     - "{{ stacks.servarr.downloads }}"
-    - "{{ stacks.servarr.services.radarr.folder }}"
-    - "{{ stacks.servarr.services.prowlarr.folder }}"
-    - "{{ stacks.servarr.services.downloaderr.folder }}"
+
+- name: Create 'arr*' services directories
+  become: true
+  file:
+    state: directory
+    path: "{{ stacks.servarr.services[item.key].folder }}"
+    owner: 1000
+    group: 1000
+    mode: 0777
+  loop: "{{ stacks.servarr.services|dict2items }}"
 
 - name: Render 'arr*' stack files
   template:

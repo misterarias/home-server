@@ -2,13 +2,13 @@
 version: "{{ docker_compose_version }}"
 
 networks:
-  {{ stacks.traefik.network_name }}:
+  {{ docker.network_name }}:
     external: true
 
 services:
   radarr:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     volumes:
@@ -16,9 +16,9 @@ services:
       - {{ shares.movies.mount_point }}:/data/movies
       - {{ stacks.servarr.downloads }}:/data/downloads
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
@@ -29,13 +29,13 @@ services:
 
   prowlarr:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
     restart: unless-stopped
     volumes:
       - {{ stacks.servarr.services.prowlarr.folder }}/:/config
@@ -48,21 +48,17 @@ services:
 
   downloaderr:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: downloaderr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
       - WEBUI_PORT={{ stacks.servarr.services.downloaderr.service_port }}
     volumes:
       - {{ stacks.servarr.services.downloaderr.folder }}/:/config
       - {{ stacks.servarr.downloads }}:/downloads
-    ports:
-      - {{ stacks.servarr.services.downloaderr.service_port }}:{{ stacks.servarr.services.downloaderr.service_port }}
-      - 6881:6881
-      - 6881:6881/udp
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
@@ -70,4 +66,26 @@ services:
       traefik.http.routers.downloaderr.rule: "Host(`{{ stacks.servarr.services.downloaderr.url }}`)"
       traefik.http.services.downloaderr.loadbalancer.server.port: {{ stacks.servarr.services.downloaderr.service_port }}
       traefik.http.routers.downloaderr.entrypoints: http
-      traefik.http.services.downloaderr.loadBalancer.passHostHeader: false
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    networks:
+      - {{ docker.network_name }}
+    container_name: sonarr
+    restart: unless-stopped
+    volumes:
+      - {{ stacks.servarr.services.sonarr.folder }}/:/config
+      - {{ shares.shows.mount_point }}:/data/shows
+      - {{ stacks.servarr.downloads }}:/data/downloads
+    ports:
+      - "8989:8989"
+    environment:
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.sonarr.rule: "Host(`{{ stacks.servarr.services.sonarr.url }}`)"
+      traefik.http.services.sonarr.loadbalancer.server.port: {{ stacks.servarr.services.sonarr.service_port }}
+      traefik.http.routers.sonarr.entrypoints: http

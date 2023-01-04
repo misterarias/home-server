@@ -2,13 +2,13 @@
 version: "{{ docker_compose_version }}"
 
 networks:
-  {{ stacks.traefik.network_name }}:
+  {{ docker.network_name }}:
     external: true
 
 services:
   prometheus:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: prom/prometheus:v2.40.1
     container_name: prometheus
     volumes:
@@ -31,7 +31,7 @@ services:
 
   nodeexporter:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: prom/node-exporter:v1.4.0
     container_name: nodeexporter
     volumes:
@@ -53,7 +53,7 @@ services:
 
   cadvisor:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: gcr.io/cadvisor/cadvisor:v0.46.0
     container_name: cadvisor
     privileged: true
@@ -75,7 +75,7 @@ services:
 
   grafana:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: grafana/grafana:9.2.4
     container_name: grafana
     volumes:

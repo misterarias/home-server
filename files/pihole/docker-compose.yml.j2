@@ -2,14 +2,14 @@
 version: "{{ docker_compose_version }}"
 
 networks:
-  {{ stacks.traefik.network_name }}:
+  {{ docker.network_name }}:
     external: true
 
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   pihole:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     container_name: pihole
     image: pihole/pihole:latest
     ports:

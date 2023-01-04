@@ -2,19 +2,19 @@
 version: "{{ docker_compose_version }}"
 
 networks:
-  {{ stacks.traefik.network_name }}:
+  {{ docker.network_name }}:
     external: true
 
 services:
   jellyfin:
     networks:
-      - {{ stacks.traefik.network_name }}
+      - {{ docker.network_name }}
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
       - JELLYFIN_PublishedServerUrl={{ stacks.jellyfin.url }}
     group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
       - '989' # render
@@ -29,8 +29,6 @@ services:
     restart: unless-stopped
     devices:
       - /dev/dri:/dev/dri
-    #- /dev/dri/renderD128:/dev/dri/renderD128
-    #- /dev/dri/card0:/dev/dri/card0
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
