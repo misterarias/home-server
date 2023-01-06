@@ -91,6 +91,8 @@ services:
   heimdall:
     networks:
       - {{ docker.network_name }}
+    dns:
+      - {{ dns_container_ip }}
     image: lscr.io/linuxserver/heimdall:latest
     container_name: heimdall
     restart: unless-stopped
