@@ -49,3 +49,7 @@ stacks:
         folder: "{{ compose_folder }}/servarr/sonarr"
         service_port: 8989
         url: "sonarr.{{ home_domain }}"
+      heimdall:
+        folder: "{{ compose_folder }}/servarr/heimdall"
+        service_port: 80
+        url: "my.{{ home_domain }}"

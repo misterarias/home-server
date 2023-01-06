@@ -77,8 +77,6 @@ services:
       - {{ stacks.servarr.services.sonarr.folder }}/:/config
       - {{ shares.shows.mount_point }}:/data/shows
       - {{ stacks.servarr.downloads }}:/data/downloads
-    ports:
-      - "8989:8989"
     environment:
       - PUID={{ docker.environment.PUID }}
       - PGID={{ docker.environment.PGID }}
@@ -89,3 +87,22 @@ services:
       traefik.http.routers.sonarr.rule: "Host(`{{ stacks.servarr.services.sonarr.url }}`)"
       traefik.http.services.sonarr.loadbalancer.server.port: {{ stacks.servarr.services.sonarr.service_port }}
       traefik.http.routers.sonarr.entrypoints: http
+
+  heimdall:
+    networks:
+      - {{ docker.network_name }}
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    restart: unless-stopped
+    volumes:
+      - {{ stacks.servarr.services.heimdall.folder }}/:/config
+    environment:
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.heimdall.rule: "Host(`{{ stacks.servarr.services.heimdall.url }}`)"
+      traefik.http.services.heimdall.loadbalancer.server.port: {{ stacks.servarr.services.heimdall.service_port }}
+      traefik.http.routers.heimdall.entrypoints: http
