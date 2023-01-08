@@ -1,0 +1,36 @@
+---
+- name: Create Home Assistant directory
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ host_user_id }}"
+    group: "{{ host_group_id }}"
+    mode: 0777
+  loop:
+    - "{{ stacks.home_assistant.folder }}"
+    - "{{ stacks.home_assistant.folder }}/config"
+
+- name: Get Traefik container info
+  community.docker.docker_container_info:
+    name: traefik
+  register: traefik_container_info
+
+- name: Make sure it exists
+  ansible.builtin.assert:
+    that:
+      - traefik_container_info.exists
+
+- name: Register Traefik container IP
+  set_fact:
+    traefik_container_ip: |
+      {{ traefik_container_info.container.NetworkSettings.Networks[docker.network_name].IPAddress|trim }}
+
+- name: Render Home Assistant files
+  template:
+    src: "files/home_assistant/{{ item }}.j2"
+    dest: "{{ stacks.home_assistant.folder }}/{{ item }}"
+  loop:
+    - docker-compose.yml
+    - config/configuration.yaml
+  register: home_assistant_files

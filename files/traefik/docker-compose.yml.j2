@@ -12,6 +12,8 @@ services:
     image: traefik:v2.9
     container_name: traefik
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"

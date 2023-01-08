@@ -1,0 +1,27 @@
+---
+version: "{{ docker_compose_version }}"
+
+services:
+  home_assistant:
+    network_mode: host
+    expose:
+    - {{ stacks.home_assistant.service_port }}
+    container_name: home_assistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    privileged: true
+    volumes:
+      - {{ stacks.home_assistant.folder }}/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    environment:
+      # In case we see some '<jemalloc>: Unsupported system page size' error traces
+      - DISABLE_JEMALLOC=true
+      - TZ={{ docker.environment.TZ}}
+      - DOMAIN={{ stacks.home_assistant.url }}
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.home_assistant.entrypoints: http
+      traefik.http.routers.home_assistant.rule: "Host(`{{ stacks.home_assistant.url }}`)"
+      traefik.http.services.home_assistant-svc.loadBalancer.server.port: {{ stacks.home_assistant.service_port }}
+      traefik.http.services.home_assistant-svc.loadBalancer.passHostHeader: true
