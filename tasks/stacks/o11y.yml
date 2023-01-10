@@ -4,8 +4,8 @@
   file:
     state: directory
     path: "{{ item }}"
-    owner: 1000
-    group: 1000
+    owner: "{{ host_user_id }}"
+    group: "{{ host_group_id }}"
     mode: 0777
   loop:
     - "{{ stacks.o11y.folder }}"
@@ -43,8 +43,8 @@
   copy:
     src: "files/o11y/grafana/provisioning"
     dest: "{{ stacks.o11y.services.grafana.folder }}"
-    owner: 1000
-    group: 1000
+    owner: "{{ host_user_id }}"
+    group: "{{ host_group_id }}"
     mode: 0644
     force: false
   register: grafana_dashboards

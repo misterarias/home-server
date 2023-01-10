@@ -50,8 +50,12 @@
     state: started
     name: docker
 
-- name: Install Samba tooling
+- name: Install Extra packages
   become: true
   pacman:
-    name: cifs-utils
+    name: "{{ item }}"
     state: present
+  loop:
+    - cifs-utils
+    - wget
+    - unzip
