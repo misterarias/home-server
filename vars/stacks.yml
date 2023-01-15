@@ -4,16 +4,25 @@ stacks:
     url: "traefik.{{ home_domain }}"
     folder: "{{ compose_folder }}/traefik"
     service_port: 8080
+    templates:
+    - docker-compose.yml
+    - traefik.toml
   pihole:
     url: "pihole.{{ home_domain }}"
     folder: "{{ compose_folder }}/pihole"
     service_port: 80
+    templates:
+    - docker-compose.yml
   jellyfin:
     url: "jellyfin.{{ home_domain }}"
     folder: "{{ compose_folder }}/jellyfin"
     service_port: 8096
+    templates:
+    - docker-compose.yml
   o11y:
     folder: "{{ compose_folder }}/o11y"
+    templates:
+    - docker-compose.yml
     services:
       prometheus:
         url: "prometheus.{{ home_domain }}"
@@ -57,3 +66,9 @@ stacks:
     folder: "{{ compose_folder }}/home_assistant"
     service_port: 8123
     url: "assistant.{{ home_domain }}"
+  calibre_web:
+    folder: "{{ compose_folder }}/calibre_web"
+    service_port: 8083
+    url: "books.{{ home_domain }}"
+    templates:
+      - docker-compose.yml
