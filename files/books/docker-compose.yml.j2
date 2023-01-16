@@ -1,0 +1,55 @@
+---
+version: "{{ docker_compose_version }}"
+
+networks:
+  {{ docker.network_name }}:
+    external: true
+
+services:
+  calibre_web:
+    networks:
+      - {{ docker.network_name }}
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre_web
+    environment:
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
+    volumes:
+      - {{ stacks.books.services.calibre_web.folder }}/:/config
+      - {{ shares.books.mount_point }}:/media/books
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.calibre_web.entrypoints: http
+      traefik.http.routers.calibre_web.rule: "Host(`{{ stacks.books.services.calibre_web.url }}`)"
+      traefik.http.services.calibre_web-svc.loadBalancer.server.port: {{ stacks.books.services.calibre_web.service_port }}
+      traefik.http.services.calibre_web-svc.loadBalancer.passHostHeader: true
+
+  calibre:
+    networks:
+      - {{ docker.network_name }}
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+    environment:
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
+    volumes:
+      - {{ stacks.books.services.calibre.folder }}/:/config
+      - {{ shares.books.mount_point }}:/media/books
+    ports:
+      - 8081:8081 # Calibre web server, test this and see if we need it
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.calibre.entrypoints: http
+      traefik.http.routers.calibre.rule: "Host(`{{ stacks.books.services.calibre.url }}`)"
+      traefik.http.services.calibre-svc.loadBalancer.server.port: {{ stacks.books.services.calibre.service_port }}
+      traefik.http.services.calibre-svc.loadBalancer.passHostHeader: true

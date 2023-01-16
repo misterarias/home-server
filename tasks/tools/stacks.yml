@@ -56,7 +56,6 @@
   register: _stack_files
 
 - name: Get file flags set by pre-tasks, if any
-  when: pre_tasks_file is file
   set_fact:
     current_stack_files: "{{ hostvars[inventory_hostname][_stack.key + '_files']|default({'changed': false}) }}"
 

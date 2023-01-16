@@ -75,9 +75,16 @@ stacks:
     templates:
     - docker-compose.yml
     - config/configuration.yaml
-  calibre_web:
-    folder: "{{ compose_folder }}/calibre_web"
-    service_port: 8083
-    url: "books.{{ home_domain }}"
+  books:
+    folder: "{{ compose_folder }}/books"
     templates:
       - docker-compose.yml
+    services:
+      calibre_web:
+        folder: "{{ compose_folder }}/books/calibre_web"
+        service_port: 8083
+        url: "books.{{ home_domain }}"
+      calibre:
+        folder: "{{ compose_folder }}/books/calibre"
+        service_port: 8080
+        url: "calibre.{{ home_domain }}"
