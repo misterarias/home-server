@@ -1,29 +1,4 @@
 ---
-- name: Register Host IP
-  set_fact:
-    host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-
-- name: Create Pihole directories
-  become: true
-  file:
-    state: directory
-    path: "{{ item }}"
-    owner: 1000
-    group: 1000
-    mode: 0777
-  loop:
-    - "{{ stacks.pihole.folder }}"
-    - "{{ stacks.pihole.folder }}/etc-pihole"
-
-- name: Render pihole files
-  template:
-    src: "files/pihole/{{ item }}.j2"
-    dest: "{{ stacks.pihole.folder }}/{{ item }}"
-  loop:
-    - docker-compose.yml
-    - etc-pihole/custom.list
-  register: pihole_templates
-
 # Disable port 53 in host so we can use pihole: https://github.com/pi-hole/docker-pi-hole/#running-pi-hole-docker
 - name: Disable DNS port in host
   become: true
@@ -54,8 +29,3 @@
   ansible.builtin.systemd:
     state: restarted
     name: systemd-resolved
-
-- name: Set pihole changed flag
-  set_fact:
-    pihole_files:
-      changed: "{{ pihole_templates.changed or resolv_file.changed | bool }}"

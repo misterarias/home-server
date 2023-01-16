@@ -1,0 +1,14 @@
+---
+- name: Get Pihole DNS container info
+  community.docker.docker_container_info:
+    name: pihole
+  register: pihole_container_info
+
+- name: Make sure it exists
+  ansible.builtin.assert:
+    that:
+      - pihole_container_info.exists
+
+- name: Register DNS IP
+  set_fact:
+    dns_container_ip: "{{ pihole_container_info.container.NetworkSettings.Networks[docker.network_name].IPAddress }}"

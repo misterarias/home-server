@@ -1,21 +1,21 @@
 ---
-- name: "Set compose variables for '{{ _stack.key }}' stack"
+- name: "({{ _stack.key }}) Set compose variables for stack"
   set_fact:
     compose_folder: "{{ _stack.value.folder }}"
     compose_files_changed: "{{ lookup('vars', '{{ _stack.key }}_files').changed }}"
     compose_recreate: smart
 
-- name: "Set recreation to 'always' if files have changed"
+- name: "({{ _stack.key }}) Set recreation to 'always' if files have changed"
   when: compose_files_changed
   set_fact:
     compose_recreate: always
 
-- name: "Create and start '{{ _stack.key }}' stack's containers"
+- name: "({{ _stack.key }}) Create and start stack's containers"
   community.docker.docker_compose:
     project_src: "{{ compose_folder }}"
     recreate: "{{ compose_recreate }}"
 
-- name: "Clear compose variables for '{{ _stack.key }}' stack"
+- name: "({{ _stack.key }}) Clear compose variables for stack"
   set_fact:
     compose_folder:
     compose_files_changed:

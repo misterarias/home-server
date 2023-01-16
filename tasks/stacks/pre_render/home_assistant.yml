@@ -1,0 +1,21 @@
+---
+- name: Create Home Assistant config directory
+  become: true
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ host_user_id }}"
+    group: "{{ host_group_id }}"
+    mode: 0777
+  loop:
+    - "{{ stacks.home_assistant.folder }}/config"
+
+- name: Get Traefik container info
+  register: traefik_container_info
+  community.docker.docker_container_info:
+    name: traefik
+
+- name: Register Traefik container IP
+  set_fact:
+    traefik_container_ip: |
+      {{ traefik_container_info.container.NetworkSettings.Networks[docker.network_name].IPAddress|trim }}

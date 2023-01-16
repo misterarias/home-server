@@ -11,8 +11,11 @@ stacks:
     url: "pihole.{{ home_domain }}"
     folder: "{{ compose_folder }}/pihole"
     service_port: 80
+    extra_folders:
+      - etc-pihole
     templates:
     - docker-compose.yml
+    - etc-pihole/custom.list
   jellyfin:
     url: "jellyfin.{{ home_domain }}"
     folder: "{{ compose_folder }}/jellyfin"
@@ -40,7 +43,8 @@ stacks:
         service_port: 3000
   servarr:
     folder: "{{ compose_folder }}/servarr/"
-    downloads: "{{ compose_folder }}/servarr/downloads"
+    extra_folders:
+      - downloads
     services:
       radarr:
         folder: "{{ compose_folder }}/servarr/radarr"
@@ -66,6 +70,11 @@ stacks:
     folder: "{{ compose_folder }}/home_assistant"
     service_port: 8123
     url: "assistant.{{ home_domain }}"
+    files:
+      - config/hacs.sh
+    templates:
+    - docker-compose.yml
+    - config/configuration.yaml
   calibre_web:
     folder: "{{ compose_folder }}/calibre_web"
     service_port: 8083

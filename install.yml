@@ -5,7 +5,16 @@
   vars_files:
     - vars/main.yml
     - vars/stacks.yml
+  vars:
+    host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    stack_filter: "{{ lookup('env', 'INCLUDE_TASK')|default('') }}"
+    stack_list: "{{ stacks|dict2items }}"
   tasks:
+    - name: Get list of stacks to install
+      when: stack_filter != ""
+      set_fact:
+        stack_list: "{{ stack_list | selectattr('key', 'equalto', stack_filter) | list }}"
+
     - name: Get docker network information
       community.docker.docker_network_info:
         name: "{{ docker.network_name }}"
@@ -17,13 +26,13 @@
         name: "{{ docker.network_name }}"
 
     - name: Prepare Stacks
-      include_tasks: "tasks/stacks/{{ _stack.key }}.yml"
-      loop: "{{ stacks|dict2items }}"
+      include_tasks: "tasks/tools/stacks.yml"
+      loop: "{{ stack_list }}"
       loop_control:
         loop_var: _stack
 
     - name: Restart stack containers if needed
       include_tasks: tasks/tools/compose.yml
-      loop: "{{ stacks|dict2items }}"
+      loop: "{{ stack_list }}"
       loop_control:
         loop_var: _stack

@@ -16,12 +16,3 @@
     owner: 1000
     group: 1000
     mode: 0777
-
-- name: Render traefik files
-  template:
-    src: "files/traefik/{{ item }}.j2"
-    dest: "{{ stacks.traefik.folder }}/{{ item }}"
-  loop:
-    - docker-compose.yml
-    - traefik.toml
-  register: traefik_files
