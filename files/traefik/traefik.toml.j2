@@ -2,12 +2,12 @@
   [metrics.prometheus]
     addEntryPointsLabels = true
     addRoutersLabels = true
-    entryPoint = "metrics"
+    entryPoint = "http"
 
 [log]
   # By default, the level is set to ERROR. Alternative logging levels
   # are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-  level = "DEBUG"
+  level = "WARN"
   filePath = "/traefik.log"
 
 [docker]

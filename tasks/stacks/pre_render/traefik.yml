@@ -1,13 +1,4 @@
 ---
-- name: Create traefik directory
-  become: true
-  file:
-    state: directory
-    path: "{{ stacks.traefik.folder }}"
-    owner: 1000
-    group: 1000
-    mode: 0777
-
 - name: Touch log file
   copy:
     content: ""
