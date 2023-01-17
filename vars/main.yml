@@ -17,7 +17,7 @@ samba:
   config_dir: /etc/samba
   credentials_file: /etc/samba/credentials
 samba_fstab_options: |
-  credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm
+  credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm,nobrl
 shares:
   jellyfin:
     folder: "//{{ samba.server }}/video/jellyfin"
