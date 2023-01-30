@@ -1,42 +1,42 @@
-[metrics]
-  [metrics.prometheus]
-    addEntryPointsLabels = true
-    addRoutersLabels = true
-    entryPoint = "http"
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    entryPoint: "http"
 
-[log]
+log:
   # By default, the level is set to ERROR. Alternative logging levels
   # are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-  level = "INFO"
-  filePath = "/traefik.log"
+  level: "INFO"
+  filePath: "/traefik.log"
 
-[docker]
+docker:
   # Defines a default docker network to use for connections to all
   # containers.  This option can be overridden on a container basis
   # with the traefik.docker.network label.
-  network = "traefik"
+  network: "traefik"
 
   # Expose containers by default through Traefik. If set to false,
   # containers that don't have a traefik.enable=true label will be
   # ignored from the resulting routing configuration.
-  exposedbydefault = false
+  exposedbydefault: false
 
-[api]
+api:
   # Enable the API in insecure mode, which means that the API will be
   # available directly on the entryPoint named traefik. If the entryPoint
   # named traefik is not configured, it will be automatically created on
   # port 8080.
-  insecure = true
+  insecure: true
 
-[providers]
+providers:
   # Connection to docker host system (docker.sock)
   # Attach labels to your containers and let Traefik do the rest!
   # Traefik works with both Docker (standalone) Engine and Docker Swarm Mode.
   # See: https://docs.traefik.io/providers/docker/
-  [providers.docker]
+  docker:
     # Traefik requires access to the docker socket to get its dynamic
     # configuration.
-    endpoint = "unix:///var/run/docker.sock"
+    endpoint: "unix:///var/run/docker.sock"
 
 # EntryPoints are the network entry points into Traefik. They define
 # the port which will receive the packets, and whether to listen for
@@ -44,15 +44,15 @@
 # See: https://docs.traefik.io/routing/entrypoints/
 # NOTE: If a TLS section (i.e. any of its fields) is defined in your docker-compose.yml file,
 # then the default configuration does not apply at all.
-[entryPoints]
-  [entryPoints.http]
-    address = ":80"
+entryPoints:
+  http:
+    address: ":80"
   # Standard HTTP redirects to HTTPS
   ## [entryPoints.http.http]
   ##   [entryPoints.http.http.redirections]
   ##     [entryPoints.http.http.redirections.entrypoint]
-  ##       to = "https"
-  ##       scheme = "https"
+  ##       to: "https"
+  ##       scheme: "https"
   # Standard HTTPS
-  [entryPoints.https]
-    address = ":443"
+  https:
+    address: ":443"

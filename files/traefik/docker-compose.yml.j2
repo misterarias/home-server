@@ -24,7 +24,7 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - {{ stacks.traefik.folder }}/traefik.toml:/traefik.toml
+      - {{ stacks.traefik.folder }}/traefik.yaml:/traefik.yaml
       - {{ stacks.traefik.folder }}/traefik-provider.toml:/traefik-provider.toml
       - {{ stacks.traefik.folder }}/traefik.log:/traefik.log
     labels:

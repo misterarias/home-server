@@ -6,7 +6,7 @@ stacks:
     service_port: 8080
     templates:
     - docker-compose.yml
-    - traefik.toml
+    - traefik.yaml
   pihole:
     url: "pihole.{{ home_domain }}"
     folder: "{{ compose_folder }}/pihole"
