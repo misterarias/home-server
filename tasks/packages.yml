@@ -59,3 +59,4 @@
     - cifs-utils
     - wget
     - unzip
+    - p7zip # POSIX port of 7zip
