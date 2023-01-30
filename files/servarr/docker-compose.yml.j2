@@ -14,7 +14,7 @@ services:
     volumes:
       - {{ stacks.servarr.services.radarr.folder }}/:/config
       - {{ shares.movies.mount_point }}:/data/movies
-      - {{ stacks.servarr.downloads }}:/data/downloads
+      - {{ stacks.servarr.extra_folders[0] }}:/data/downloads
     environment:
       - PUID={{ docker.environment.PUID }}
       - PGID={{ docker.environment.PGID }}
@@ -30,7 +30,7 @@ services:
   prowlarr:
     networks:
       - {{ docker.network_name }}
-    image: lscr.io/linuxserver/prowlarr:develop
+    image: lscr.io/linuxserver/prowlarr:nightly
     container_name: prowlarr
     environment:
       - PUID={{ docker.environment.PUID }}
@@ -58,7 +58,7 @@ services:
       - WEBUI_PORT={{ stacks.servarr.services.downloaderr.service_port }}
     volumes:
       - {{ stacks.servarr.services.downloaderr.folder }}/:/config
-      - {{ stacks.servarr.downloads }}:/downloads
+      - {{ stacks.servarr.extra_folders[0] }}:/downloads
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
@@ -76,7 +76,7 @@ services:
     volumes:
       - {{ stacks.servarr.services.sonarr.folder }}/:/config
       - {{ shares.shows.mount_point }}:/data/shows
-      - {{ stacks.servarr.downloads }}:/data/downloads
+      - {{ stacks.servarr.extra_folders[0] }}:/data/downloads
     environment:
       - PUID={{ docker.environment.PUID }}
       - PGID={{ docker.environment.PGID }}

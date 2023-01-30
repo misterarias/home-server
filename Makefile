@@ -16,7 +16,7 @@ provision:
 install:
 	@ansible-playbook --inventory=inventory.yml ./install.yml
 
-install-o11y install-traefik install-home_assistant install-books:
+install-o11y install-traefik install-home_assistant install-books install-servarr:
 	@INCLUDE_TASK=$(subst install-,,$@)   ansible-playbook --inventory=inventory.yml ./install.yml
 
 

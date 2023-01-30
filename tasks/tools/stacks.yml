@@ -12,7 +12,7 @@
   become: true
   file:
     state: directory
-    path: "{{ _stack.value.folder }}/{{ item }}"
+    path: "{{ item }}"
     owner: 1000
     group: 1000
     mode: 0777
