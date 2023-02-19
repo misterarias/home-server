@@ -2,5 +2,5 @@
 - name: Execute HACS script
   when: home_assistant_files.changed
   ansible.builtin.shell:
-    cmd: bash hacs.sh
+    cmd: bash +x hacs.sh
     chdir: "{{ stacks.home_assistant.folder }}/config"

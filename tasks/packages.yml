@@ -25,7 +25,7 @@
       - docker-compose>=1.29.2
       - PyYAML>=5.4.0
 
-- name: Docker install
+- name: Install my packages
   become: true
   pacman:
     name: "{{ item }}"
@@ -34,29 +34,20 @@
   loop:
     - docker
     - docker-compose
-  register: docker_install
-
-- name: Enable systemd service
-  when: docker_install.changed
-  become: true
-  ansible.builtin.systemd:
-    enabled: true
-    name: docker
-
-- name: Start systemd service
-  when: docker_install.changed
-  become: true
-  ansible.builtin.systemd:
-    state: started
-    name: docker
-
-- name: Install Extra packages
-  become: true
-  pacman:
-    name: "{{ item }}"
-    state: present
-  loop:
     - cifs-utils
     - wget
     - unzip
-    - p7zip # POSIX port of 7zip
+    - p7zip
+    - git
+    - rsync
+    - ntp
+
+- name: Enable services
+  become: true
+  ansible.builtin.systemd:
+    enabled: true
+    state: started
+    name: "{{ item }}"
+  loop:
+    - ntpd
+    - docker

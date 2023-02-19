@@ -7,15 +7,34 @@
     owner: "{{ host_user_id }}"
     group: "{{ host_group_id }}"
     mode: 0777
+    recurse: true
   loop:
     - "{{ stacks.home_assistant.folder }}/config"
+    - "{{ stacks.home_assistant.folder }}/config/tmp_repos"
+    - "{{ stacks.home_assistant.folder }}/config/custom_components"
 
 - name: Get Traefik container info
   register: traefik_container_info
   community.docker.docker_container_info:
     name: traefik
 
-- name: Register Traefik container IP
+- name: Register Traefik container subnet
   set_fact:
-    traefik_container_ip: |
-      {{ traefik_container_info.container.NetworkSettings.Networks[docker.network_name].IPAddress|trim }}
+    traefik_container_subnet: |
+      {{ traefik_container_info.container.NetworkSettings.Networks[docker.network_name].IPAddress|trim }} #/{{ traefik_container_info.container.NetworkSettings.Networks[docker.network_name].IPPrefixLen|trim }}
+
+- name: Clone Airzone plugin directory to temporary location
+  git:
+    repo: https://github.com/max13fr/Airzonecloud-HomeAssistant
+    dest: "{{ stacks.home_assistant.folder }}/config/tmp_repos/airzonecloud"
+    version: master
+    update: false
+
+- name: Copy over only needed files
+  delegate_to: billy
+  synchronize:
+    src: "{{ stacks.home_assistant.folder }}/config/tmp_repos/airzonecloud/custom_components/airzonecloud"
+    dest: "{{ stacks.home_assistant.folder }}/config/custom_components"
+    recursive: true
+    delete: true
+    checksum: true

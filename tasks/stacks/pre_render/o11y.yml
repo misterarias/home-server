@@ -1,4 +1,18 @@
 ---
+- name: Get Pihole DNS container info
+  community.docker.docker_container_info:
+    name: pihole
+  register: pihole_container_info
+
+- name: Make sure it exists
+  ansible.builtin.assert:
+    that:
+      - pihole_container_info.exists
+
+- name: Register DNS IP
+  set_fact:
+    dns_container_ip: "{{ pihole_container_info.container.NetworkSettings.Networks[docker.network_name].IPAddress }}"
+
 - name: Create directories
   become: true
   file:
@@ -15,12 +29,21 @@
     - "{{ stacks.o11y.services.grafana.folder }}/data"
     - "{{ stacks.o11y.services.grafana.folder }}/provisioning/dashboards"
     - "{{ stacks.o11y.services.grafana.folder }}/provisioning/datasources"
+    - "{{ stacks.o11y.services.alertmanager.folder }}/etc"
 
 - name: Render compose file
   template:
     src: "files/o11y/docker-compose.yml.j2"
     dest: "{{ stacks.o11y.folder }}/docker-compose.yml"
   register: compose_file
+
+- name: Render Alert manager files
+  template:
+    src: "files/o11y/alertmanager/{{ item }}.j2"
+    dest: "{{ stacks.o11y.services.alertmanager.folder }}/{{ item }}"
+  loop:
+    - etc/config.yml
+  register: alertmanager_files
 
 - name: Render Prometheus files
   template:
@@ -52,4 +75,4 @@
 - name: Set variable for changed files
   set_fact:
     o11y_files:
-      changed: "{{ grafana_dashboards.changed or grafana_templates.changed or prometheus_files.changed or compose_file.changed | bool }}"
+      changed: "{{ alertmanager_files.changed or grafana_dashboards.changed or grafana_templates.changed or prometheus_files.changed or compose_file.changed or alertmanager_files.changed | bool }}"

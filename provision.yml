@@ -4,6 +4,9 @@
   gather_facts: false   # needs python
   tasks:
     - include_vars: vars/main.yml
+    - include_vars:
+        file: secret.yml
+        name: secrets
 
     - name: Install needed software
       include_tasks: tasks/packages.yml

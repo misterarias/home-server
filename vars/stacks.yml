@@ -41,6 +41,10 @@ stacks:
         url: "grafana.{{ home_domain }}"
         folder: "{{ compose_folder }}/o11y/grafana"
         service_port: 3000
+      alertmanager:
+        url: "alertmanager.{{ home_domain }}"
+        folder: "{{ compose_folder }}/o11y/alertmanager"
+        service_port: 9093
   servarr:
     folder: "{{ compose_folder }}/servarr/"
     templates:

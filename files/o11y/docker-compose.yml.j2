@@ -7,6 +7,8 @@ networks:
 
 services:
   prometheus:
+    dns:
+      - {{ dns_container_ip }}
     networks:
       - {{ docker.network_name }}
     image: prom/prometheus:v2.40.1
@@ -93,3 +95,25 @@ services:
       traefik.http.routers.grafana.rule: "Host(`{{ stacks.o11y.services.grafana.url }}`)"
       traefik.http.services.grafana.loadbalancer.server.port: {{ stacks.o11y.services.grafana.service_port }}
       traefik.http.routers.grafana.entrypoints: http
+
+  alertmanager:
+    dns:
+      - {{ dns_container_ip }}
+    networks:
+      - {{ docker.network_name }}
+    image: prom/alertmanager:v0.25.0
+    container_name: alertmanager
+    volumes:
+      - {{ stacks.o11y.services.alertmanager.folder }}/etc:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    expose:
+      - 9093
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.alertmanager.rule: "Host(`{{ stacks.o11y.services.alertmanager.url }}`)"
+      traefik.http.services.alertmanager.loadbalancer.server.port: {{ stacks.o11y.services.alertmanager.service_port }}
+      traefik.http.routers.alertmanager.entrypoints: http

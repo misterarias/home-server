@@ -5,9 +5,9 @@ default_config:
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - {{ traefik_container_ip }}
     - 192.168.1.0/24
     - 127.0.0.1
+    - {{ traefik_container_subnet }}
 
 # Text to speech
 tts:
@@ -17,3 +17,11 @@ tts:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+climate:
+  - platform: airzonecloud
+    username: {{ secrets.airzone_username }}
+    password: {{ secrets.airzone_password }}
+
+prometheus:
+  namespace: hass

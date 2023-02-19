@@ -38,22 +38,19 @@ scrape_configs:
     scrape_interval: 10s
     honor_labels: true
     static_configs:
-      - targets: ['traefik:{{ stacks.traefik.service_port }}']
+      - targets: ['traefik.home']
 
+  - job_name: "hass"
+    scrape_interval: 60s
+    metrics_path: /api/prometheus
+    bearer_token:  "{{ secrets.hass_long_lived_token }}"
+    scheme: http
+    static_configs:
+      - targets: ['assistant.home']
 
-#alerting:
-#  alertmanagers:
-#  - scheme: http
-#    static_configs:
-#    - targets:
-#      - 'alertmanager:9093'
-#
-#  - job_name: 'nginx'
-#    scrape_interval: 10s
-#    static_configs:
-#      - targets: ['nginxexporter:9113']
-
-#  - job_name: 'aspnetcore'
-#    scrape_interval: 10s
-#    static_configs:
-#      - targets: ['eventlog-proxy:5000', 'eventlog:5000']
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - 'alertmanager:{{ stacks.o11y.services.alertmanager.service_port}}'

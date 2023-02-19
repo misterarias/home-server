@@ -10,13 +10,13 @@ verify-python:
 
 .PHONY: provision
 provision:
-	@ansible-playbook --inventory=inventory.yml ./provision.yml
+	@ansible-playbook --inventory=inventory.yml --vault-password-file=.password.txt ./provision.yml
 
 .PHONY: install
 install:
-	@ansible-playbook --inventory=inventory.yml ./install.yml
+	@ansible-playbook --inventory=inventory.yml --vault-password-file=.password.txt  --inventory=inventory.yml ./install.yml
 
 install-o11y install-traefik install-home_assistant install-books install-servarr:
-	@INCLUDE_TASK=$(subst install-,,$@)   ansible-playbook --inventory=inventory.yml ./install.yml
+	@INCLUDE_TASK=$(subst install-,,$@) ansible-playbook --inventory=inventory.yml --vault-password-file=.password.txt  --inventory=inventory.yml ./install.yml
 
 
