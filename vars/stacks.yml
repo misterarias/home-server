@@ -52,6 +52,12 @@ stacks:
     extra_folders:
       - "{{ compose_folder }}/servarr/downloads"
     services:
+      tdarr:
+        folder: "{{ compose_folder }}/servarr/tdarr"
+        service_port: 8265
+        url: "tdarr.{{ home_domain }}"
+        server_service_port: 8266
+        server_url: "tdarrserver.{{ home_domain }}"
       radarr:
         folder: "{{ compose_folder }}/servarr/radarr"
         service_port: 7878
