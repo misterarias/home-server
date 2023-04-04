@@ -1,9 +1,9 @@
 ---
 route:
-  receiver: 'telegram'
+  receiver: telegram
 
 receivers:
-- name: 'telegram'
+- name: telegram
   webhook_configs:
   - url: 'https://api.telegram.org/{{ secrets.telegram_hash_id }}/sendMessage?chat_id={{ secrets.telegram_chat_id }}&parse_mode=Markdown'
     send_resolved: true
