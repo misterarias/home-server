@@ -52,6 +52,10 @@ stacks:
     extra_folders:
       - "{{ compose_folder }}/servarr/downloads"
     services:
+      bazarr:
+        folder: "{{ compose_folder }}/servarr/bazarr"
+        url: "bazarr.{{ home_domain }}"
+        service_port: 6767
       tdarr:
         folder: "{{ compose_folder }}/servarr/tdarr"
         service_port: 8265
