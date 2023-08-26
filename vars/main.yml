@@ -31,3 +31,6 @@ shares:
   books:
     folder: "//{{ samba.server }}/Bookz"
     mount_point: "/mnt/shared/books"
+  games:
+    folder: "//{{ samba.server }}/Juegoz"
+    mount_point: "/mnt/shared/games"

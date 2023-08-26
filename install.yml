@@ -30,7 +30,7 @@
         name: "{{ docker.network_name }}"
 
     - name: Prepare Stacks
-      include_tasks: "tasks/tools/stacks.yml"
+      include_tasks: tasks/tools/stacks.yml
       loop: "{{ stack_list }}"
       loop_control:
         loop_var: _stack

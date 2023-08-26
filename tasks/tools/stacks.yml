@@ -1,73 +1,14 @@
 ---
-- name: "({{ _stack.key }}) Create stack base directory"
-  become: true
-  file:
-    state: directory
-    path: "{{ _stack.value.folder }}"
-    owner: 1000
-    group: 1000
-    mode: 0777
-
-- name: "({{ _stack.key }}) Create stack extra sub-directories"
-  become: true
-  file:
-    state: directory
-    path: "{{ item }}"
-    owner: 1000
-    group: 1000
-    mode: 0777
-  loop: "{{ _stack.value.extra_folders|default([]) }}"
-
-- name: "({{ _stack.key }}) Create stack services' directories"
-  when: item.value.folder is defined
-  become: true
-  file:
-    state: directory
-    owner: 1000
-    group: 1000
-    mode: 0777
-    path: "{{ item.value.folder }}"
-  loop: "{{ _stack.value.services|default({})|dict2items }}"
-
-- name: "({{ _stack.key }}) Get pre-rendering tasks"
+- name: Get some stack facts
   set_fact:
-    pre_tasks_file: "tasks/stacks/pre_render/{{ _stack.key }}.yml"
+    stack_disabled: "{{ _stack.value.disabled | default(false) | bool }}"
 
-- name: Include extra tasks (only if defined)
-  ansible.builtin.include_tasks: '{{ pre_tasks_file }}'
-  when: pre_tasks_file is file
+- name: Report if stack is disabled
+  when: stack_disabled
+  debug:
+    msg: "Stack {{ _stack.key }} is disabled, not installing"
 
-- name: "({{ _stack.key }}) Render stack templates"
-  template:
-    src: "files/{{ _stack.key }}/{{ item }}.j2"
-    dest: "{{ _stack.value.folder }}/{{ item }}"
-  loop: "{{ _stack.value.templates|default([]) }}"
-  register: _stack_templates
+- name: Install enabled stack
+  when: not stack_disabled
+  include_tasks: tasks/tools/install_enabled_stack.yml
 
-- name: "({{ _stack.key }}) Copy stack files"
-  copy:
-    owner: "{{ host_user_id }}"
-    group: "{{ host_group_id }}"
-    mode: 0644
-    force: false
-    src: "files/{{ _stack.key }}/{{ item }}"
-    dest: "{{ _stack.value.folder }}/{{ item }}"
-  loop: "{{ _stack.value.files|default([]) }}"
-  register: _stack_files
-
-- name: Get file flags set by pre-tasks, if any
-  set_fact:
-    current_stack_files: "{{ hostvars[inventory_hostname][_stack.key + '_files']|default({'changed': false}) }}"
-
-- name: Register flag of changed files if pre-tasks file has not done it
-  set_fact:
-    "{{ _stack.key }}_files":
-      changed: "{{ current_stack_files.changed or _stack_files.changed or _stack_templates.changed|bool }}"
-
-- name: "({{ _stack.key }}) Get post-render tasks"
-  set_fact:
-    post_tasks_file: "tasks/stacks/post_render/{{ _stack.key }}.yml"
-
-- name: Include post tasks (only if defined)
-  ansible.builtin.include_tasks: '{{ post_tasks_file }}'
-  when: post_tasks_file is file

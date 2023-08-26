@@ -5,28 +5,7 @@ networks:
   {{ docker.network_name }}:
     external: true
 
-services:
-  bazarr:
-    networks:
-      - {{ docker.network_name }}
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    environment:
-      - PUID={{ docker.environment.PUID }}
-      - PGID={{ docker.environment.PGID }}
-      - TZ={{ docker.environment.TZ }}
-    volumes:
-      - {{ stacks.servarr.services.bazarr.folder }}/config:/config
-      - {{ shares.movies.mount_point }}:/data/movies
-      - {{ shares.shows.mount_point }}:/data/shows
-    restart: unless-stopped
-    labels:
-      org.label-schema.group: "monitoring"
-      traefik.enable: true
-      traefik.http.routers.bazarr.rule: "Host(`{{ stacks.servarr.services.bazarr.url }}`)"
-      traefik.http.services.bazarr.loadbalancer.server.port: {{ stacks.servarr.services.bazarr.service_port }}
-      traefik.http.routers.bazarr.entrypoints: http
-
+x-disabled:
   tdarr:
     networks:
       - {{ docker.network_name }}
@@ -56,6 +35,28 @@ services:
       traefik.http.routers.tdarr.rule: "Host(`{{ stacks.servarr.services.tdarr.url }}`)"
       traefik.http.services.tdarr.loadbalancer.server.port: {{ stacks.servarr.services.tdarr.service_port }}
       traefik.http.routers.tdarr.entrypoints: http
+
+services:
+  bazarr:
+    networks:
+      - {{ docker.network_name }}
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
+    volumes:
+      - {{ stacks.servarr.services.bazarr.folder }}/config:/config
+      - {{ shares.movies.mount_point }}:/data/movies
+      - {{ shares.shows.mount_point }}:/data/shows
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.bazarr.rule: "Host(`{{ stacks.servarr.services.bazarr.url }}`)"
+      traefik.http.services.bazarr.loadbalancer.server.port: {{ stacks.servarr.services.bazarr.service_port }}
+      traefik.http.routers.bazarr.entrypoints: http
 
   radarr:
     networks:

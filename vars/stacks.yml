@@ -23,6 +23,7 @@ stacks:
     templates:
     - docker-compose.yml
   o11y:
+    disabled: true
     folder: "{{ compose_folder }}/o11y"
     templates:
     - docker-compose.yml
@@ -83,6 +84,7 @@ stacks:
         service_port: 80
         url: "my.{{ home_domain }}"
   home_assistant:
+    disabled: true
     folder: "{{ compose_folder }}/home_assistant"
     service_port: 8123
     url: "assistant.{{ home_domain }}"
@@ -92,6 +94,7 @@ stacks:
     - docker-compose.yml
     - config/configuration.yaml
   books:
+    disabled: true
     folder: "{{ compose_folder }}/books"
     templates:
       - docker-compose.yml

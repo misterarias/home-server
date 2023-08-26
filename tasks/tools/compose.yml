@@ -1,22 +1,29 @@
 ---
+- name: Get some stack facts
+  set_fact:
+    stack_disabled: "{{ _stack.value.disabled | default(false) | bool }}"
+
+- name: Report if stack is disabled
+  when: stack_disabled
+  debug:
+    msg: "Stack {{ _stack.key }} is disabled, not recreating"
+
 - name: "({{ _stack.key }}) Set compose variables for stack"
+  when: not stack_disabled
   set_fact:
     compose_folder: "{{ _stack.value.folder }}"
     compose_files_changed: "{{ lookup('vars', '{{ _stack.key }}_files').changed }}"
-    compose_recreate: smart
 
-- name: "({{ _stack.key }}) Set recreation to 'always' if files have changed"
-  when: compose_files_changed
-  set_fact:
-    compose_recreate: always
+- name: "({{ _stack.key }}) stop  containers if something has changed"
+  when: not stack_disabled and compose_files_changed
+  raw: "docker-compose -f {{ compose_folder }} down"
 
 - name: "({{ _stack.key }}) Create and start stack's containers"
-  community.docker.docker_compose:
-    project_src: "{{ compose_folder }}"
-    recreate: "{{ compose_recreate }}"
+  when: not stack_disabled
+  raw: "docker-compose --project-directory {{ compose_folder }} up --detach --remove-orphans"
 
 - name: "({{ _stack.key }}) Clear compose variables for stack"
   set_fact:
+    stack_disabled: 
     compose_folder:
     compose_files_changed:
-    compose_recreate:
