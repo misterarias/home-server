@@ -10,7 +10,7 @@ verify-python:
 
 .PHONY: provision
 provision:
-	@ansible-playbook --inventory=inventory.yml --vault-password-file=.password.txt ./provision.yml
+	@ansible-playbook --inventory=inventory.yml --vault-password-file=.password.txt ./provision.yml 
 
 .PHONY: install
 install:

@@ -4,26 +4,24 @@
   register: python_output
 
 - set_fact:
-    python_installed: not python_output.stdout
+    python_installed: "{{ not python_output.stdout }}"
 
 - name: Raw-install Python3
   when: not python_installed
-  raw: pacman --noconfirm -S python3 python-pip
+  raw: pacman --noconfirm -S python3 python-pip python-pipx
   become: true
 
 - name: Python packages for Pip
-  when: not python_installed
-  raw: "pip install --user '{{ item }}'"
+  raw: "pip install --break-system-packages '{{ item }}'"
   loop:
     - "setuptools>=65.6.0"
 
 - name: Python packages for Docker
   pip:
-    extra_args: --user
+    extra_args: --user --break-system-packages
     name:
-      - docker>=6.0.0
-      - docker-compose>=1.29.2
-      - PyYAML>=5.4.0
+      - Docker
+      - PyYAML
 
 - name: Install my packages
   become: true
