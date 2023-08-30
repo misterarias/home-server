@@ -36,7 +36,6 @@
     - wget
     - unzip
     - p7zip
-    - git
     - rsync
     - ntp
 

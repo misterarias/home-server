@@ -40,3 +40,7 @@
       loop: "{{ stack_list }}"
       loop_control:
         loop_var: _stack
+
+    - name: Install the git server
+      include_tasks: tasks/tools/git.yml
+    

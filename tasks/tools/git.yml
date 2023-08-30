@@ -1,0 +1,83 @@
+---
+- name: Set git variables
+  set_fact:
+    git_folder: /srv/code
+
+- name: install git
+  become: true
+  pacman:
+    name: git
+    state: present
+
+- name: Enable pushing to repos
+  register: git_service
+  become: true
+  lineinfile:
+    path: '/usr/lib/systemd/system/git-daemon@.service'
+    regex: 'ExecStart.*'
+    line: |
+      ExecStart=-/usr/lib/git-core/git-daemon --inetd --export-all --base-path=/srv/git –enable=receive-pack 
+
+- name: Restart git service
+  when: git_service.changed
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    name: git-daemin
+
+- name: Create git user
+  become: true
+  user:
+    state: present
+    name: git
+    create_home: yes
+    home: "{{ git_folder }}"
+    shell: /bin/bash
+
+- name: Create git ssh directory
+  become: true
+  file:
+    state: directory
+    name: "{{ git_folder }}/.ssh"
+    owner: git
+    group: git
+    mode: 0700
+
+- name: Create git ssh auth file
+  become: true
+  file:
+    state: touch
+    name: "{{ git_folder }}/.ssh/authorized_keys"
+    owner: git
+    group: git
+    mode: 0600
+
+
+
+- name: Allow user in
+  become: true
+  lineinfile:
+    path: "{{ git_folder }}/.ssh/authorized_keys"
+    regex: '.*juanito.*'
+    line: |
+      ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBDiQdhDYC3jSmqSwV6GcS4fHhMfO7PGe54UX4kliD0+qqkC7AYcCNGBhmlXKxaU4BJ0GPb82z1MiNVnBUNBgJ30Bzj6YWVx+WhqgW1ji2E8YQ/5QDgk3nRhQfK3npCxBzQ== juanito@e053375
+
+- name: Create repos directories
+  become: true
+  file:
+    state: directory
+    name: "{{ git_folder }}/{{ item }}.git"
+    owner: git
+    group: git
+    mode: 0700
+  loop:
+    - Qualentum
+
+- name: Create repos if they do not exist
+  become: true
+  args:
+    chdir: "{{ git_folder }}/{{ item }}.git"
+  shell: |
+    [ ! -d .git ] && su git -c 'git --bare init'
+  loop:
+    - Qualentum
