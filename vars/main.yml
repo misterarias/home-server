@@ -1,5 +1,5 @@
 ---
-compose_folder: "/srv"
+compose_folder: /home/billy/srv
 host_user_id: 1000
 host_group_id: 1000
 docker_compose_version: "3.3"
@@ -34,3 +34,6 @@ shares:
   games:
     folder: "//{{ samba.server }}/Juegoz"
     mount_point: "/mnt/shared/games"
+  downloads:
+    folder: "//{{ samba.server }}/video/downloadz"
+    mount_point: "/mnt/shared/downloads"

@@ -1,12 +1,4 @@
 ---
 home:
   hosts:
-    billy:
-        ansible_user: billy
-        ansible_connection: ssh 
-    billy_raw:
-      vars:
-        # This must be an user without sudo, password is expected
-        ansible_user: juan  
-        ansible_connection: ssh 
-
+    billy: {}
