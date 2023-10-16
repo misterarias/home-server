@@ -1,5 +1,6 @@
 ---
-compose_folder: /home/billy/srv
+root_server_folder: /home/billy/srv
+compose_folder: "{{ root_server_folder }}"
 host_user_id: 1000
 host_group_id: 1000
 docker_compose_version: "3.3"

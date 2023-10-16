@@ -14,9 +14,9 @@
     compose_folder: "{{ _stack.value.folder }}"
     compose_files_changed: "{{ lookup('vars', '{{ _stack.key }}_files').changed }}"
 
-- name: "({{ _stack.key }}) stop  containers if something has changed"
+- name: "({{ _stack.key }}) stop containers if something has changed"
   when: not stack_disabled and compose_files_changed
-  raw: "docker-compose -f {{ compose_folder }} down"
+  raw: "docker-compose --project-directory {{ compose_folder }} down"
 
 - name: "({{ _stack.key }}) Create and start stack's containers"
   when: not stack_disabled
