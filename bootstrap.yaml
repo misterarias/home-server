@@ -1,0 +1,8 @@
+---
+- name: Bootstrap home server
+  gather_facts: false
+  hosts: billy_raw
+  tasks:
+    - name: Debug things
+      raw: echo hola
+
