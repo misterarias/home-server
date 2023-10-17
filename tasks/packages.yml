@@ -38,7 +38,6 @@
       - p7zip
       - rsync
       - ntp
-      - systemd-resolved
 
 - name: Enable services
   become: true
@@ -49,4 +48,3 @@
   loop:
     - ntpd
     - docker
-    - systemd-resolved

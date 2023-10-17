@@ -46,6 +46,7 @@
     opts: "{{ samba_fstab_options }}"
     state: mounted
     fstype: cifs
+    boot: true
   loop: "{{ shares|dict2items }}"
 
 - name: Reload services
@@ -53,9 +54,9 @@
   become: true
   raw: systemctl daemon-reload
 
-- name: Restart remote FS
-  when: fstab_mounts.changed
-  become: true
-  ansible.builtin.systemd:
-    state: restarted
-    name: remote-fs.target
+##- name: Restart remote FS
+##  when: fstab_mounts.changed
+##  become: true
+##  ansible.builtin.systemd:
+##    state: restarted
+##    name: remote-fs.target

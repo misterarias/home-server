@@ -1,7 +1,7 @@
 ---
 - name: Set git variables
   set_fact:
-    git_folder: "{{ root_server_folder }}/git"
+    git_folder: "/home/git"
 
 - name: install git
   become: true

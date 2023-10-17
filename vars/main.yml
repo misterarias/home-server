@@ -1,5 +1,7 @@
 ---
-root_server_folder: /home/billy/srv
+# TODO - make it depend on ansible_ssh_user
+root_server_folder: "{{ ansible_user_dir }}/srv" 
+#root_server_folder: /home/juan/srv
 compose_folder: "{{ root_server_folder }}"
 host_user_id: 1000
 host_group_id: 1000
@@ -17,8 +19,7 @@ samba:
   server: 192.168.1.33
   config_dir: /etc/samba
   credentials_file: /etc/samba/credentials
-samba_fstab_options: |
-  credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm,nobrl
+samba_fstab_options: "credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm,nobrl,x-systemd.automount,x-systemd.requires=network-online.target,x-systemd.device-timeout=10"
 shares:
   jellyfin:
     folder: "//{{ samba.server }}/video/jellyfin"

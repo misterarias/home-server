@@ -16,9 +16,10 @@ services:
       - PGID={{ docker.environment.PGID }}
       - TZ={{ docker.environment.TZ }}
       - JELLYFIN_PublishedServerUrl={{ stacks.jellyfin.url }}
+      - DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel
     group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
-      - '989' # render
-      - '985' # video
+      - '105'
+      - '44'
     volumes:
       # NOTE: local folder, to avoid sqlite + samba problems
       - {{ stacks.jellyfin.folder }}/config:/config
