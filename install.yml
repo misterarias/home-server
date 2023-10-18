@@ -42,5 +42,6 @@
         loop_var: _stack
 
     - name: Install the git server
+      when: stack_filter == ""
       include_tasks: tasks/tools/git.yml
     
