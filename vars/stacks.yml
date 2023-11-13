@@ -1,11 +1,5 @@
 ---
 stacks:
-  amule:
-    url: "amule.{{ home_domain }}"
-    folder: "{{ compose_folder }}/amule"
-    service_port: 4711
-    templates:
-    - docker-compose.yml
   jenkins:
     url: "jenkins.{{ home_domain }}"
     folder: "{{ compose_folder }}/jenkins"
