@@ -6,6 +6,14 @@ stacks:
     service_port: 4711
     templates:
     - docker-compose.yml
+  jenkins:
+    url: "jenkins.{{ home_domain }}"
+    folder: "{{ compose_folder }}/jenkins"
+    service_port: 8080
+    plugins: []
+    templates:
+    - docker-compose.yml
+    - Dockerfile
   traefik:
     url: "traefik.{{ home_domain }}"
     folder: "{{ compose_folder }}/traefik"

@@ -1,0 +1,30 @@
+---
+version: "{{ docker_compose_version }}"
+
+networks:
+  {{ docker.network_name }}:
+    external: true
+
+services:
+  jenkins:
+    networks:
+      - {{ docker.network_name }}
+    container_name: jenkins
+    build: 
+      context: .
+    privileged: true
+    user: root
+    ports:
+     - 50000:50000
+    environment:
+      TZ: "Europe/Madrid"
+    volumes:
+      - {{ stacks.jenkins.folder }}/jenkins_configuration:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.jenkins.rule: "Host(`{{ stacks.jenkins.url }}`)"
+      traefik.http.services.jenkins.loadbalancer.server.port: {{ stacks.jenkins.service_port }}
+      traefik.http.routers.jenkins.entrypoints: http

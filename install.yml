@@ -10,10 +10,6 @@
     stack_filter: "{{ lookup('env', 'INCLUDE_TASK')|default('')|trim }}"
     stack_list: "{{ stacks|dict2items }}"
   tasks:
-    - include_vars:
-        file: secret.yml
-        name: secrets
-
     - name: Get list of stacks to install
       when: stack_filter != ""
       set_fact:
