@@ -5,36 +5,7 @@ networks:
   {{ docker.network_name }}:
     external: true
 
-x-disabled:
-  tdarr:
-    networks:
-      - {{ docker.network_name }}
-    container_name: tdarr
-    image: ghcr.io/haveagitgat/tdarr:latest
-    restart: unless-stopped
-    environment:
-      - PUID={{ docker.environment.PUID }}
-      - PGID={{ docker.environment.PGID }}
-      - TZ={{ docker.environment.TZ }}
-      - UMASK_SET=002
-      - serverIP=0.0.0.0
-      - serverPort={{ stacks.servarr.services.tdarr.server_service_port }}
-      - webUIPort={{ stacks.servarr.services.tdarr.service_port }}
-      - internalNode=true
-      - nodeName=MyInternalNode
-    volumes:
-      - {{ stacks.servarr.services.tdarr.folder }}/server:/app/server
-      - {{ stacks.servarr.services.tdarr.folder }}/configs:/app/configs
-      - {{ stacks.servarr.services.tdarr.folder }}/logs:/app/logs
-      - {{ stacks.servarr.services.tdarr.folder }}/transcode_cache:/temp
-      - {{ shares.movies.mount_point }}:/data/movies
-      - {{ shares.shows.mount_point }}:/data/shows
-    labels:
-      org.label-schema.group: "monitoring"
-      traefik.enable: true
-      traefik.http.routers.tdarr.rule: "Host(`{{ stacks.servarr.services.tdarr.url }}`)"
-      traefik.http.services.tdarr.loadbalancer.server.port: {{ stacks.servarr.services.tdarr.service_port }}
-      traefik.http.routers.tdarr.entrypoints: http
+x-disabled: {}
 
 services:
   bazarr:
@@ -161,5 +132,32 @@ services:
       traefik.http.routers.heimdall.rule: "Host(`{{ stacks.servarr.services.heimdall.url }}`)"
       traefik.http.services.heimdall.loadbalancer.server.port: {{ stacks.servarr.services.heimdall.service_port }}
       traefik.http.routers.heimdall.entrypoints: http
-
-
+  tdarr:
+    networks:
+      - {{ docker.network_name }}
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    restart: unless-stopped
+    environment:
+      - PUID={{ docker.environment.PUID }}
+      - PGID={{ docker.environment.PGID }}
+      - TZ={{ docker.environment.TZ }}
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort={{ stacks.servarr.services.tdarr.server_service_port }}
+      - webUIPort={{ stacks.servarr.services.tdarr.service_port }}
+      - internalNode=true
+      - nodeName=MyInternalNode
+    volumes:
+      - {{ stacks.servarr.services.tdarr.folder }}/server:/app/server
+      - {{ stacks.servarr.services.tdarr.folder }}/configs:/app/configs
+      - {{ stacks.servarr.services.tdarr.folder }}/logs:/app/logs
+      - {{ stacks.servarr.services.tdarr.folder }}/transcode_cache:/temp
+      - {{ shares.movies.mount_point }}:/data/movies
+      - {{ shares.shows.mount_point }}:/data/shows
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: true
+      traefik.http.routers.tdarr.rule: "Host(`{{ stacks.servarr.services.tdarr.url }}`)"
+      traefik.http.services.tdarr.loadbalancer.server.port: {{ stacks.servarr.services.tdarr.service_port }}
+      traefik.http.routers.tdarr.entrypoints: http

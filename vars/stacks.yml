@@ -31,7 +31,7 @@ stacks:
     templates:
     - docker-compose.yml
   o11y:
-    disabled: true
+    disabled: false
     folder: "{{ compose_folder }}/o11y"
     templates:
     - docker-compose.yml
