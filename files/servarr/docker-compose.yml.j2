@@ -73,13 +73,19 @@ services:
   downloaderr:
     networks:
       - {{ docker.network_name }}
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: qbittorrentofficial/qbittorrent-nox:latest
     container_name: downloaderr
     environment:
       - PUID={{ docker.environment.PUID }}
       - PGID={{ docker.environment.PGID }}
       - TZ={{ docker.environment.TZ }}
-      - WEBUI_PORT={{ stacks.servarr.services.downloaderr.service_port }}
+      - QBT_WEBUI_PORT={{ stacks.servarr.services.downloaderr.service_port }}
+      - PAGID=10000
+      - QBT_EULA=accept
+      - QBT_VERSION=latest
+      - UMASK=022
+    tmpfs:
+      - /tmp
     volumes:
       - {{ stacks.servarr.services.downloaderr.folder }}/:/config
       - {{ shares.downloads.mount_point }}:/downloads
