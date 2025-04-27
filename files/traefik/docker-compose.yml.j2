@@ -9,7 +9,7 @@ services:
   traefik:
     networks:
       - {{ docker.network_name }}
-    image: traefik:v2.9
+    image: traefik:v3.2
     container_name: traefik
     restart: unless-stopped
     extra_hosts:

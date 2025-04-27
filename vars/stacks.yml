@@ -30,8 +30,9 @@ stacks:
     service_port: 8096
     templates:
     - docker-compose.yml
+
   o11y:
-    disabled: false
+    disabled: true
     folder: "{{ compose_folder }}/o11y"
     templates:
     - docker-compose.yml
@@ -54,6 +55,7 @@ stacks:
         url: "alertmanager.{{ home_domain }}"
         folder: "{{ compose_folder }}/o11y/alertmanager"
         service_port: 9093
+
   servarr:
     folder: "{{ compose_folder }}/servarr/"
     templates:

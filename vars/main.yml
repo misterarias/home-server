@@ -1,6 +1,6 @@
 ---
 # TODO - make it depend on ansible_ssh_user
-root_server_folder: "{{ ansible_user_dir }}/srv" 
+root_server_folder: "{{ ansible_user_dir }}/srv"
 #root_server_folder: /home/juan/srv
 compose_folder: "{{ root_server_folder }}"
 host_user_id: 1000
@@ -27,6 +27,9 @@ shares:
   movies:
     folder: "//{{ samba.server }}/video/Peliz"
     mount_point: "/mnt/shared/movies"
+  kids_movies:
+    folder: "//{{ samba.server }}/video/videos"
+    mount_point: "/mnt/shared/videos"
   shows:
     folder: "//{{ samba.server }}/video/Zeriez"
     mount_point: "/mnt/shared/shows"

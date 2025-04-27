@@ -17,16 +17,17 @@ services:
       - TZ={{ docker.environment.TZ }}
       - JELLYFIN_PublishedServerUrl={{ stacks.jellyfin.url }}
       - DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel
-    group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
-      - '105'
-      - '44'
+    #group_add: # by id as these may not exist within the container. Needed to provide permissions to the VAAPI Devices
+    #  - '105'
+    #  - '44'
     volumes:
       # NOTE: local folder, to avoid sqlite + samba problems
       - {{ stacks.jellyfin.folder }}/config:/config
       - {{ shares.jellyfin.mount_point }}:/cache
       - {{ shares.movies.mount_point }}:/media/movies
       - {{ shares.shows.mount_point }}:/media/shows
-      - {{ shares.books.mount_point }}:/media/books
+      - {{ shares.kids_movies.mount_point }}:/media/videos
+      - /dev/shm/jf-transcodes:/transcodes:rw
     restart: unless-stopped
     devices:
       - /dev/dri:/dev/dri

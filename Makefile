@@ -14,9 +14,9 @@ provision:
 
 .PHONY: install
 install:
-	@ansible-playbook --inventory=inventory.yml --inventory=inventory.yml ./install.yml
+	@ansible-playbook --inventory=inventory.yml ./install.yml
 
 install-amule install-jenkins install-jellyfin install-o11y install-traefik install-home_assistant install-books install-servarr install-pihole install-git:
-	@INCLUDE_TASK=$(subst install-,,$@) ansible-playbook --inventory=inventory.yml  --inventory=inventory.yml ./install.yml
+	@INCLUDE_TASK=$(subst install-,,$@) ansible-playbook --inventory=inventory.yml ./install.yml
 
 

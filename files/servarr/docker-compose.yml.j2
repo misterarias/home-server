@@ -21,6 +21,7 @@ services:
       - {{ stacks.servarr.services.bazarr.folder }}/config:/config
       - {{ shares.movies.mount_point }}:/data/movies
       - {{ shares.shows.mount_point }}:/data/shows
+      - {{ shares.kids_movies.mount_point }}:/data/videos
     restart: unless-stopped
     labels:
       org.label-schema.group: "monitoring"
@@ -37,7 +38,7 @@ services:
     volumes:
       - {{ stacks.servarr.services.radarr.folder }}/:/config
       - {{ shares.movies.mount_point }}:/data/movies
-      #- {{ stacks.servarr.extra_folders[0] }}:/data/downloads
+      - {{ shares.kids_movies.mount_point }}:/data/videos
       - {{ shares.downloads.mount_point }}:/data/downloads
     environment:
       - PUID={{ docker.environment.PUID }}
@@ -107,6 +108,7 @@ services:
       - {{ stacks.servarr.services.sonarr.folder }}/:/config
       - {{ shares.shows.mount_point }}:/data/shows
       - {{ shares.downloads.mount_point }}:/data/downloads
+      - {{ shares.kids_movies.mount_point }}:/data/videos
     environment:
       - PUID={{ docker.environment.PUID }}
       - PGID={{ docker.environment.PGID }}
@@ -138,6 +140,7 @@ services:
       traefik.http.routers.heimdall.rule: "Host(`{{ stacks.servarr.services.heimdall.url }}`)"
       traefik.http.services.heimdall.loadbalancer.server.port: {{ stacks.servarr.services.heimdall.service_port }}
       traefik.http.routers.heimdall.entrypoints: http
+
   tdarr:
     networks:
       - {{ docker.network_name }}
@@ -161,6 +164,7 @@ services:
       - {{ stacks.servarr.services.tdarr.folder }}/transcode_cache:/temp
       - {{ shares.movies.mount_point }}:/data/movies
       - {{ shares.shows.mount_point }}:/data/shows
+      - {{ shares.kids_movies.mount_point }}:/data/videos
     labels:
       org.label-schema.group: "monitoring"
       traefik.enable: true
