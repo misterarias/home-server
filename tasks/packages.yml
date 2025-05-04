@@ -11,7 +11,7 @@
 - name: Install my packages
   become: true
   package:
-    state: present@|@
+    state: present
     name:
       - docker
       - python3-pip
