@@ -5,7 +5,7 @@
     state: directory
     path: "{{ samba.config_dir }}"
     owner: root
-    mode: 0700
+    mode: "0700"
 
 - name: Create samba credentials file
   become: true
@@ -14,7 +14,7 @@
     dest: "{{ samba.credentials_file }}"
     force: true
     owner: root
-    mode: 0600
+    mode: "0600"
 
 - name: Unmount Samba shares
   register: fstab_mounts

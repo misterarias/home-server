@@ -3,16 +3,20 @@
   hosts: home
   gather_facts: false   # needs python
   tasks:
-    - include_vars: vars/main.yml
-    - include_vars:
+    - name: Include main variables
+      ansible.builtin.include_vars: vars/main.yml
+
+    - name: Include secrets
+      ansible.builtin.include_vars:
         file: secret.yml
         name: secrets
 
     - name: Install needed software
-      include_tasks: tasks/packages.yml
+      ansible.builtin.include_tasks: tasks/packages.yml
 
     - name: Create users
-      include_tasks: tasks/users.yml
+      ansible.builtin.include_tasks: tasks/users.yml
 
     - name: Mount shares
-      include_tasks: tasks/shares.yml
+      ansible.builtin.include_tasks: tasks/shares.yml
+    

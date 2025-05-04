@@ -6,6 +6,14 @@
     dest: /etc/sysctl.d/40-max-user-watches.conf
     force: false
 
+
+- name: Create and give permissions to /dev/shm/jf-transcodes directory
+  become: true
+  ansible.builtin.file:
+    path: /dev/shm/jf-transcodes
+    state: directory
+    mode: '0777'
+
 - name: Enable real-time monitoring of libraries
   become: true
   ansible.builtin.lineinfile:
