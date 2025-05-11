@@ -1,4 +1,32 @@
 ---
+- name: Generate hash of shares configuration
+  ansible.builtin.set_fact:
+    shares_hash: "{{ shares | string | hash('sha1') }}"
+  run_once: true
+
+- name: Read stored hash
+  become: true
+  ansible.builtin.slurp:
+    src: "{{ samba.config_dir }}/.shares_hash"
+  register: stored_hash
+  ignore_errors: true
+
+- name: Set stored hash fact
+  ansible.builtin.set_fact:
+    stored_hash_value: "{{ (stored_hash.content | b64decode) if not stored_hash.failed else '' }}"
+
+- name: Set changed flag
+  ansible.builtin.set_fact:
+    shares_changed: "{{ shares_hash != stored_hash_value }}"
+
+- name: Store new hash
+  become: true
+  ansible.builtin.copy:
+    content: "{{ shares_hash }}"
+    dest: "{{ samba.config_dir }}/.shares_hash"
+    mode: "0600"
+  when: shares_changed
+
 - name: Create samba config
   become: true
   file:
@@ -6,6 +34,8 @@
     path: "{{ samba.config_dir }}"
     owner: root
     mode: "0700"
+  when: shares_changed
+
 
 - name: Create samba credentials file
   become: true
@@ -15,6 +45,7 @@
     force: true
     owner: root
     mode: "0600"
+  when: shares_changed
 
 - name: Unmount Samba shares
   register: fstab_mounts
@@ -26,6 +57,7 @@
     state: unmounted
     fstype: cifs
   loop: "{{ shares|dict2items }}"
+  when: shares_changed
 
 - name: Create mount points
   become: true
@@ -36,6 +68,7 @@
     owner: 1000
     group: 1000
   loop: "{{ shares|dict2items }}"
+  when: shares_changed
 
 - name: Mount Samba shares
   register: fstab_mounts
@@ -48,6 +81,7 @@
     fstype: cifs
     boot: true
   loop: "{{ shares|dict2items }}"
+  when: shares_changed
 
 - name: Reload services
   when: fstab_mounts.changed

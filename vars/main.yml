@@ -19,7 +19,8 @@ samba:
   server: 192.168.1.33
   config_dir: /etc/samba
   credentials_file: /etc/samba/credentials
-samba_fstab_options: "credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm,nobrl,x-systemd.automount,x-systemd.requires=network-online.target,x-systemd.device-timeout=10"
+# samba_fstab_options: "credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,mfsymlinks,nolease,noperm,nobrl,x-systemd.automount,x-systemd.requires=network-online.target,x-systemd.device-timeout=10"
+samba_fstab_options: "credentials={{ samba.credentials_file }},uid=1000,gid=1000,iocharset=utf8,vers=3.0,cache=strict,actimeo=30,rsize=262144,wsize=262144,_netdev,x-systemd.automount,x-systemd.requires=network-online.target"
 shares:
   jellyfin:
     folder: "//{{ samba.server }}/video/jellyfin"
@@ -33,12 +34,12 @@ shares:
   shows:
     folder: "//{{ samba.server }}/video/Zeriez"
     mount_point: "/mnt/shared/shows"
-  books:
-    folder: "//{{ samba.server }}/Bookz"
-    mount_point: "/mnt/shared/books"
-  games:
-    folder: "//{{ samba.server }}/Juegoz"
-    mount_point: "/mnt/shared/games"
+      ##  books:
+      ##    folder: "//{{ samba.server }}/Bookz"
+      ##    mount_point: "/mnt/shared/books"
+      ##  games:
+      ##    folder: "//{{ samba.server }}/Juegoz"
+      ##    mount_point: "/mnt/shared/games"
   downloads:
     folder: "//{{ samba.server }}/video/downloadz"
     mount_point: "/mnt/shared/downloads"
