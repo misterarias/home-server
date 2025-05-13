@@ -1,5 +1,9 @@
 ---
 stacks:
+  loli:
+    folder: "{{ compose_folder }}/loli"
+    templates:
+      - docker-compose.yml
   jenkins:
     url: "jenkins.{{ home_domain }}"
     folder: "{{ compose_folder }}/jenkins"

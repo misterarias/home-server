@@ -1,0 +1,17 @@
+---
+version: "{{ docker_compose_version }}"
+
+services:
+  loli:
+    dns:
+      - 1.1.1.1 # Cloudflare DNS, system one is too slow
+    image: juanito/lolibot:0.2.1
+    container_name: lolibot
+    volumes:
+      - {{ stacks.loli.folder }}/config.toml:/app/config.toml:rw
+      - {{ stacks.loli.folder }}/.creds:/app/.creds/:ro
+      - {{ stacks.loli.folder }}/taskbot.db:/app/taskbot.db:rw
+    restart: unless-stopped
+    labels:
+      org.label-schema.group: "monitoring"
+      traefik.enable: false
